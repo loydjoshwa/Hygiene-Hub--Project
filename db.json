@@ -25,7 +25,7 @@
     },
     {
       "id": "p2",
-      "name": "Khadi Aloe Vera Handwash",
+      "name": "Khadi Aloe Vera & Mint Handwash",
       "price": 179,
       "rating": 4.5,
       "description": "Gentle moisturizing Aloe Vera handwash offering deep protection from germs and dryness.",
@@ -45,7 +45,7 @@
       "price": 189,
       "rating": 4.4,
       "description": "Tea tree and peppermint handwash with cooling and antibacterial properties for fresh, clean hands.",
-      "image": "/prod4.png"
+      "image": "/prod4.webp"
     },
     {
       "id": "p5",
@@ -61,15 +61,15 @@
       "price": 185,
       "rating": 4.5,
       "description": "Zesty lime & mint foaming handwash with deep hydration and 99.9% germ protection.",
-      "image": "/prod6.png"
+      "image": "/prod6.webp"
     },
     {
       "id": "p7",
-      "name": "Lassa Antibacterial Handwash",
+      "name": "Lassa Antibacterial Germ Protection Handwash",
       "price": 130,
       "rating": 4.3,
       "description": "Anti-bacterial handwash with citrus fragrance, gentle cleansing, and everyday germ protection.",
-      "image": "/prod7.png"
+      "image": "/prod7.webp"
     },
     {
       "id": "p8",
@@ -77,7 +77,7 @@
       "price": 155,
       "rating": 4.6,
       "description": "Natural herbal handwash handcrafted with neem & tulsi for deep cleansing and soothing freshness.",
-      "image": "/prod8.png"
+      "image": "/prod8.webp"
     },
     {
       "id": "p9",
@@ -85,15 +85,15 @@
       "price": 190,
       "rating": 4.5,
       "description": "Ocean-fresh hydrating handwash formulated with plant-based cleansers and ocean breeze fragrance.",
-      "image": "/prod9.png"
+      "image": "/prod9.webp"
     },
     {
       "id": "p10",
-      "name": "Aqua Bliss Foaming Hand Soap",
+      "name": "Aqua Bliss & Foaming Hand Soap",
       "price": 220,
       "rating": 4.7,
       "description": "Premium gentle foaming soap with Aqua Bliss fragrance for refreshing, silky soft handwashing.",
-      "image": "/prod10.png"
+      "image": "/prod10.webp"
     },
     {
       "id": "p11",
@@ -101,7 +101,7 @@
       "price": 160,
       "rating": 4.4,
       "description": "Lotus and tulsi infused gentle handwash with moisturizing properties and mild floral fragrance.",
-      "image": "/prod11.png"
+      "image": "/prod11.webp"
     },
     {
       "id": "p12",
@@ -117,7 +117,7 @@
       "price": 260,
       "rating": 4.8,
       "description": "Aromatic cocoa vanilla premium handwash with botanical extracts for deep cleansing and nourishment.",
-      "image": "/prod13.png"
+      "image": "/prod13.webp"
     },
     {
       "id": "p14",
@@ -125,7 +125,7 @@
       "price": 210,
       "rating": 4.7,
       "description": "Berry-rich handwash with pomegranate and mixed berries for antioxidant protection and fruity freshness.",
-      "image": "/prod14.png"
+      "image": "/prod14.webp"
     }
   ]
 }

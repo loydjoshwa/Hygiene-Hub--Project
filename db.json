@@ -1,0 +1,131 @@
+{
+  "users": [
+    {
+      "id": "cbd6",
+      "username": "loyd",
+      "email": "d44j@gmail.com",
+      "password": "123456"
+    },
+    {
+      "id": "8466",
+      "username": "hanan",
+      "email": "hanan@gmail.com",
+      "password": "123456"
+    }
+  ],
+  
+  "products": [
+    {
+      "id": "p1",
+      "name": "Khadi Lemon Ayurvedic Handwash",
+      "price": 169,
+      "rating": 4.6,
+      "description": "Refreshing lemon-based ayurvedic handwash enriched with antibacterial herbal extracts for soft, germ-free hands.",
+      "image": "/prod1.webp"
+    },
+    {
+      "id": "p2",
+      "name": "Khadi Aloe Vera Handwash",
+      "price": 179,
+      "rating": 4.5,
+      "description": "Gentle moisturizing Aloe Vera handwash offering deep protection from germs and dryness.",
+      "image": "/prod2.webp"
+    },
+    {
+      "id": "p3",
+      "name": "Vaadi Lavender & Mint Handwash",
+      "price": 210,
+      "rating": 4.7,
+      "description": "A calming lavender and mint-infused handwash made with natural botanicals and a soothing aroma.",
+      "image": "/prod3.webp"
+    },
+    {
+      "id": "p4",
+      "name": "Greenviv Tea Tree & Peppermint Handwash",
+      "price": 189,
+      "rating": 4.4,
+      "description": "Tea tree and peppermint handwash with cooling and antibacterial properties for fresh, clean hands.",
+      "image": "/prod4.png"
+    },
+    {
+      "id": "p5",
+      "name": "Vaadi Rose & Jasmine Hydrating Handwash",
+      "price": 199,
+      "rating": 4.6,
+      "description": "Luxurious rose & jasmine handwash enriched with hydrating botanicals for silky soft hands.",
+      "image": "/prod5.webp"
+    },
+    {
+      "id": "p6",
+      "name": "Palmolive Lime & Mint Foaming Handwash",
+      "price": 185,
+      "rating": 4.5,
+      "description": "Zesty lime & mint foaming handwash with deep hydration and 99.9% germ protection.",
+      "image": "/prod6.png"
+    },
+    {
+      "id": "p7",
+      "name": "Lassa Antibacterial Handwash",
+      "price": 130,
+      "rating": 4.3,
+      "description": "Anti-bacterial handwash with citrus fragrance, gentle cleansing, and everyday germ protection.",
+      "image": "/prod7.png"
+    },
+    {
+      "id": "p8",
+      "name": "Grandmaas Neem & Tulsi Handwash",
+      "price": 155,
+      "rating": 4.6,
+      "description": "Natural herbal handwash handcrafted with neem & tulsi for deep cleansing and soothing freshness.",
+      "image": "/prod8.png"
+    },
+    {
+      "id": "p9",
+      "name": "Safeguard Ocean Breeze Handwash",
+      "price": 190,
+      "rating": 4.5,
+      "description": "Ocean-fresh hydrating handwash formulated with plant-based cleansers and ocean breeze fragrance.",
+      "image": "/prod9.png"
+    },
+    {
+      "id": "p10",
+      "name": "Aqua Bliss Foaming Hand Soap",
+      "price": 220,
+      "rating": 4.7,
+      "description": "Premium gentle foaming soap with Aqua Bliss fragrance for refreshing, silky soft handwashing.",
+      "image": "/prod10.png"
+    },
+    {
+      "id": "p11",
+      "name": "Outshine Lotus Gentle Handwash",
+      "price": 160,
+      "rating": 4.4,
+      "description": "Lotus and tulsi infused gentle handwash with moisturizing properties and mild floral fragrance.",
+      "image": "/prod11.png"
+    },
+    {
+      "id": "p12",
+      "name": "Black Care Green Apple Handwash",
+      "price": 230,
+      "rating": 4.6,
+      "description": "Refreshing premium handwash with green apple essence offering rich lather and fruity aroma.",
+      "image": "/prod12.webp"
+    },
+    {
+      "id": "p13",
+      "name": "Skinstone Cocoa Vanilla Handwash",
+      "price": 260,
+      "rating": 4.8,
+      "description": "Aromatic cocoa vanilla premium handwash with botanical extracts for deep cleansing and nourishment.",
+      "image": "/prod13.png"
+    },
+    {
+      "id": "p14",
+      "name": "Elenor Pomegranate & Berry Handwash",
+      "price": 210,
+      "rating": 4.7,
+      "description": "Berry-rich handwash with pomegranate and mixed berries for antioxidant protection and fruity freshness.",
+      "image": "/prod14.png"
+    }
+  ]
+}

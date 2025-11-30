@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { IoMenu, IoClose, IoCartOutline, IoHeartOutline, IoPersonOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
+import { useCart } from "../Context/CartContext.jsx";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
+  const { getTotalItems } = useCart();
 
   return (
     <nav className="bg-[#1e293b] text-white fixed top-0 left-0 w-full z-50 shadow-md">
@@ -22,9 +24,14 @@ const Navbar = () => {
 
           <li><Link className="hover:text-green-400" to="/products">Products</Link></li>
 
-          <li className="flex items-center gap-1 hover:text-green-400">
+          <li className="flex items-center gap-1 hover:text-green-400 relative">
             <IoCartOutline size={20} />
-            <Link to="/cart">Cart</Link>
+            <Link to="/addtocart">Cart</Link>
+            {getTotalItems() > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                {getTotalItems()}
+              </span>
+            )}
           </li>
 
           <li className="flex items-center gap-1 hover:text-green-400">
@@ -61,8 +68,13 @@ const Navbar = () => {
 
           <Link onClick={() => setOpen(false)} to="/products" className="block hover:text-green-400">Products</Link>
 
-          <Link onClick={() => setOpen(false)} to="/cart" className="flex items-center gap-2 hover:text-green-400">
+          <Link onClick={() => setOpen(false)} to="/addtocart" className="flex items-center gap-2 hover:text-green-400 relative">
             <IoCartOutline size={22} /> Cart
+            {getTotalItems() > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                {getTotalItems()}
+              </span>
+            )}
           </Link>
 
           <Link onClick={() => setOpen(false)} to="/wishlist" className="flex items-center gap-2 hover:text-green-400">

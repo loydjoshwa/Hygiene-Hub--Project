@@ -4,10 +4,12 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import Footer from '../components/Footer'; 
 import Navbar from '../components/Navbar';
+import { useCart } from '../Context/CartContext';
 
 const Home = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const {addToCart}=useCart();
 
   // Fetch 4 products for featured section
   useEffect(() => {
@@ -28,7 +30,8 @@ const Home = () => {
     fetchFeaturedProducts();
   }, []);
 
-  const addToCart = (product) => {
+  const handleAddToCart = (product) => {
+    addToCart(product)
     toast.success(`${product.name} added to cart!`);
   };
 
@@ -37,8 +40,10 @@ const Home = () => {
   };
 
   return ( 
+    <>
+     <Navbar />
     <div> 
-      <Navbar />
+     
       
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-blue-50 to-green-50 py-20">
@@ -168,6 +173,7 @@ const Home = () => {
 
       <Footer /> 
     </div> 
+    </>
   );
 };
 

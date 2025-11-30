@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import { useCart } from '../Context/CartContext';
 
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const {addToCart}=useCart();
 
   // Fetch products from JSON server
   useEffect(() => {
@@ -41,7 +44,8 @@ const Products = () => {
   }, [searchTerm, products]);
 
   // Add to cart function
-  const addToCart = (product) => {
+  const handleAddToCart = (product) => {
+    addToCart(product)
     toast.success(`${product.name} added to cart!`);
     // Cart functionality will be implemented later
   };
@@ -153,6 +157,7 @@ const Products = () => {
           </div>
         )}
       </div>
+      < Footer />
     </div>
   );
 };

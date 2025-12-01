@@ -1,57 +1,60 @@
-
 import * as Yup from "yup"
 import { useFormik } from 'formik'
 import register_bg from "../assets/register_bg.png"
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import { useAuth } from '../Context/CartContext'
 
 const Login = () => {
   const navigate = useNavigate()
+  const { login } = useAuth()
 
   const loginValidation = Yup.object({
-    email:Yup.string().email("Please enter a valid email").required("Please enter email"),
-    password:Yup.string().required("Enter a password")
+    email: Yup.string().email("Please enter a valid email").required("Please enter email"),
+    password: Yup.string().required("Enter a password")
   })
 
-const formik = useFormik({
-  initialValues: {
-    email:"",
-    password:""
-  },
-  validationSchema: loginValidation,
-  onSubmit: async (values) => {
-    
-    try{
-      const res = await axios.get("http://localhost:3130/users");
-    const allusers = res.data;
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: ""
+    },
+    validationSchema: loginValidation,
+    onSubmit: async (values) => {
+      try {
+        const res = await axios.get("http://localhost:3130/users");
+        const allusers = res.data;
 
-    const user = allusers.find(u => u.email === values.email);
-    const userp = allusers.find(u => u.password === values.password);
+        const user = allusers.find(u => u.email === values.email);
+        const userp = allusers.find(u => u.password === values.password);
 
-    if (!user) {
-      toast.error("Email not found. Please register first");
-      return;
+        if (!user) {
+          toast.error("Email not found. Please register first");
+          return;
+        }
+
+        if (!userp) {
+          toast.error("Incorrect password. Please try again");
+          return;
+        }
+
+        // Use the auth context to login
+        login(user); // This sets the user in context and localStorage
+        
+        // Optional: You can still store in localStorage if needed
+        localStorage.setItem("email", values.email);
+        localStorage.setItem("password", values.password);
+
+        toast.success("Login successful");
+        navigate("/");
+
+      } catch (error) {
+        toast.error("Something went wrong")
+        console.log(error)
+      }
     }
-
-    if (!userp) {
-      toast.error("Incorrect password. please try again");
-      return;
-    }
-    localStorage.setItem("email", values.email);
-    localStorage.setItem("password", values.password);
-
-    toast.success("Login successful");
-    navigate("/");
-
-    }catch(error){
-      toast.error("something went wrong")
-      console.log(error)
-    }
-  }
-})
-
-  
+  })
 
   return (
     <div

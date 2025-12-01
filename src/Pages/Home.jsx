@@ -1,22 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import Footer from '../components/Footer'; 
 import Navbar from '../components/Navbar';
-import { useCart } from '../Context/CartContext';
+import { useCart, useAuth } from '../Context/CartContext';
 
 const Home = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const {addToCart}=useCart();
+  const { addToCart } = useCart();
+  const { addToWishlist, currentUser } = useAuth();
+  const navigate = useNavigate();
 
   // Fetch 4 products for featured section
   useEffect(() => {
     const fetchFeaturedProducts = async () => {
       try {
         const response = await axios.get('http://localhost:3130/products');
-        // Get first 4 products
         const products = response.data.slice(0, 4);
         setFeaturedProducts(products);
         setLoading(false);
@@ -30,21 +31,44 @@ const Home = () => {
     fetchFeaturedProducts();
   }, []);
 
-  const handleAddToCart = (product) => {
-    addToCart(product)
-    toast.success(`${product.name} added to cart!`);
+  const handleAddToCart = async (product) => {
+    if (!currentUser) {
+      toast.error('Please login to add items to cart');
+      navigate('/login');
+      return;
+    }
+
+    try {
+      await addToCart(product);
+      toast.success(`${product.name} added to cart!`);
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
-  const addToWishlist = (product) => {
-    toast.success(`${product.name} added to wishlist!`);
+  const handleAddToWishlist = async (product) => {
+    if (!currentUser) {
+      toast.error('Please login to add items to wishlist');
+      navigate('/login');
+      return;
+    }
+
+    try {
+      const added = await addToWishlist(product);
+      if (added) {
+        toast.success(`${product.name} added to wishlist!`);
+      } else {
+        toast.info(`${product.name} is already in your wishlist!`);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   return ( 
     <>
      <Navbar />
     <div> 
-     
-      
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-blue-50 to-green-50 py-20">
         <div className="max-w-7xl mx-auto px-4">
@@ -140,13 +164,13 @@ const Home = () => {
                     {/* Action Buttons */}
                     <div className="flex gap-2">
                       <button
-                        onClick={() => addToCart(product)}
+                        onClick={() => handleAddToCart(product)}
                         className="flex-1 bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 transition-colors duration-300 font-medium"
                       >
                         Add to Cart
                       </button>
                       <button
-                        onClick={() => addToWishlist(product)}
+                        onClick={() => handleAddToWishlist(product)}
                         className="bg-gray-200 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors duration-300"
                         title="Add to Wishlist"
                       >

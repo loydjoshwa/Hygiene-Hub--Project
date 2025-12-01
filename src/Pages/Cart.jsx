@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
-const Addtocart = () => {
+const Cart = () => {
   const { 
     cartItems, 
     removeFromCart, 
@@ -50,7 +50,6 @@ const Addtocart = () => {
       return;
     }
     toast.success('Proceeding to checkout!');
-    // Add your checkout logic here
   };
 
   const shippingCost = getTotalItems() > 0 ? 40 : 0;
@@ -62,14 +61,12 @@ const Addtocart = () => {
       
       <div className="pt-20 pb-16">
         <div className="max-w-7xl mx-auto px-4">
-          {/* Header */}
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-gray-800 mb-4">Shopping Cart</h1>
             <p className="text-gray-600">Review your items and proceed to checkout</p>
           </div>
 
           {cartItems.length === 0 ? (
-            // Empty Cart State
             <div className="text-center py-16 bg-white rounded-lg shadow-md">
               <div className="text-6xl mb-4">🛒</div>
               <h2 className="text-2xl font-bold text-gray-800 mb-4">Your cart is empty</h2>
@@ -83,7 +80,6 @@ const Addtocart = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Cart Items */}
               <div className="lg:col-span-2">
                 <div className="bg-white rounded-lg shadow-md">
                   <div className="p-6 border-b border-gray-200 flex justify-between items-center">
@@ -101,7 +97,6 @@ const Addtocart = () => {
                   <div className="divide-y divide-gray-200">
                     {cartItems.map((item) => (
                       <div key={item.id} className="p-6 flex flex-col sm:flex-row gap-4">
-                        {/* Product Image */}
                         <div className="flex-shrink-0">
                           <img
                             src={item.image}
@@ -110,7 +105,6 @@ const Addtocart = () => {
                           />
                         </div>
                         
-                        {/* Product Details */}
                         <div className="flex-grow">
                           <h3 className="text-lg font-semibold text-gray-800 mb-2">
                             {item.name}
@@ -123,7 +117,7 @@ const Addtocart = () => {
                               ₹{item.price}
                             </span>
                             <button
-                              onClick={() => handleRemoveItem(item.id, item.name)}
+                              onClick={() => handleRemoveItem(item.productId, item.name)}
                               className="text-red-500 hover:text-red-700 text-sm font-medium"
                             >
                               Remove
@@ -131,11 +125,10 @@ const Addtocart = () => {
                           </div>
                         </div>
                         
-                        {/* Quantity Controls */}
                         <div className="flex items-center justify-between sm:justify-end sm:flex-col sm:items-end gap-4">
                           <div className="flex items-center border border-gray-300 rounded-lg">
                             <button
-                              onClick={() => handleDecreaseQuantity(item.id, item.name, item.quantity)}
+                              onClick={() => handleDecreaseQuantity(item.productId, item.name, item.quantity)}
                               className="px-3 py-1 text-gray-600 hover:bg-gray-100 rounded-l-lg"
                             >
                               -
@@ -144,7 +137,7 @@ const Addtocart = () => {
                               {item.quantity}
                             </span>
                             <button
-                              onClick={() => handleIncreaseQuantity(item.id, item.name)}
+                              onClick={() => handleIncreaseQuantity(item.productId, item.name)}
                               className="px-3 py-1 text-gray-600 hover:bg-gray-100 rounded-r-lg"
                             >
                               +
@@ -165,7 +158,6 @@ const Addtocart = () => {
                 </div>
               </div>
 
-              {/* Order Summary */}
               <div className="lg:col-span-1">
                 <div className="bg-white rounded-lg shadow-md sticky top-24">
                   <div className="p-6 border-b border-gray-200">
@@ -216,4 +208,4 @@ const Addtocart = () => {
   );
 };
 
-export default Addtocart;
+export default Cart;

@@ -3,14 +3,15 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { useCart } from '../Context/CartContext';
+import { useCart, useAuth } from '../Context/CartContext';
 
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const {addToCart}=useCart();
+  const { addToCart } = useCart();
+  const { addToWishlist, currentUser, isInWishlist } = useAuth();
 
   // Fetch products from JSON server
   useEffect(() => {
@@ -44,16 +45,37 @@ const Products = () => {
   }, [searchTerm, products]);
 
   // Add to cart function
-  const handleAddToCart = (product) => {
-    addToCart(product)
-    toast.success(`${product.name} added to cart!`);
-    // Cart functionality will be implemented later
+  const handleAddToCart = async (product) => {
+    if (!currentUser) {
+      toast.error('Please login to add items to cart');
+      return;
+    }
+
+    try {
+      await addToCart(product);
+      toast.success(`${product.name} added to cart!`);
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   // Add to wishlist function
-  const addToWishlist = (product) => {
-    toast.success(`${product.name} added to wishlist!`);
-    // Wishlist functionality will be implemented later
+  const handleAddToWishlist = async (product) => {
+    if (!currentUser) {
+      toast.error('Please login to add items to wishlist');
+      return;
+    }
+
+    try {
+      const added = await addToWishlist(product);
+      if (added) {
+        toast.success(`${product.name} added to wishlist!`);
+      } else {
+        toast.info(`${product.name} is already in your wishlist!`);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   if (loading) {
@@ -112,7 +134,7 @@ const Products = () => {
                     alt={product.name}
                     className="h-full w-full object-contain"
                     onError={(e) => {
-                      e.target.src = '/placeholder-image.png'; // Fallback image
+                      e.target.src = '/placeholder-image.png';
                     }}
                   />
                 </div>
@@ -138,17 +160,21 @@ const Products = () => {
                   {/* Action Buttons */}
                   <div className="flex gap-2">
                     <button
-                      onClick={() => addToCart(product)}
+                      onClick={() => handleAddToCart(product)}
                       className="flex-1 bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 transition-colors font-medium"
                     >
                       Add to Cart
                     </button>
                     <button
-                      onClick={() => addToWishlist(product)}
-                      className="bg-gray-200 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors"
-                      title="Add to Wishlist"
+                      onClick={() => handleAddToWishlist(product)}
+                      className={`py-2 px-4 rounded-lg transition-colors ${
+                        isInWishlist(product.id) 
+                          ? 'bg-red-500 text-white hover:bg-red-600' 
+                          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                      }`}
+                      title={isInWishlist(product.id) ? "Remove from Wishlist" : "Add to Wishlist"}
                     >
-                      ♡
+                      {isInWishlist(product.id) ? '♥' : '♡'}
                     </button>
                   </div>
                 </div>
@@ -157,7 +183,7 @@ const Products = () => {
           </div>
         )}
       </div>
-      < Footer />
+      <Footer />
     </div>
   );
 };

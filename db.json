@@ -11,9 +11,14 @@
       "username": "hanan",
       "email": "hanan@gmail.com",
       "password": "123456"
+    },
+    {
+      "id": "2ef7",
+      "username": "hanan33",
+      "email": "hanan123@gmail.com",
+      "password": "123456"
     }
   ],
-  
   "products": [
     {
       "id": "p1",
@@ -128,10 +133,6 @@
       "image": "/prod14.webp"
     }
   ],
-  
-  "cart":[
-
-  ]
-
-  
+  "cart": [],
+  "wishlist": []
 }

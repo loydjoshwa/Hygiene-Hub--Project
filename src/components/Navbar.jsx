@@ -1,11 +1,23 @@
 import React, { useState } from "react";
-import { IoMenu, IoClose, IoCartOutline, IoHeartOutline, IoPersonOutline } from "react-icons/io5";
-import { Link } from "react-router-dom";
-import { useCart } from "../Context/CartContext.jsx";
+import { IoMenu, IoClose, IoCartOutline, IoHeartOutline, IoPersonOutline, IoLogOutOutline } from "react-icons/io5";
+import { Link, useNavigate } from "react-router-dom";
+import { useCart, useAuth } from "../Context/CartContext.jsx";
+import { toast } from "react-toastify";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const { getTotalItems } = useCart();
+  const { currentUser, logout, getWishlistCount } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+     logout();
+     navigate('/login');
+  
+      toast.success('Logged out successfully');
+   
+    setOpen(false);
+  };
 
   return (
     <nav className="bg-[#1e293b] text-white fixed top-0 left-0 w-full z-50 shadow-md">
@@ -26,7 +38,7 @@ const Navbar = () => {
 
           <li className="flex items-center gap-1 hover:text-green-400 relative">
             <IoCartOutline size={20} />
-            <Link to="/addtocart">Cart</Link>
+            <Link to="/cart">Cart</Link>
             {getTotalItems() > 0 && (
               <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                 {getTotalItems()}
@@ -34,25 +46,49 @@ const Navbar = () => {
             )}
           </li>
 
-          <li className="flex items-center gap-1 hover:text-green-400">
+          <li className="flex items-center gap-1 hover:text-green-400 relative">
             <IoHeartOutline size={20} />
             <Link to="/wishlist">Wishlist</Link>
+            {getWishlistCount() > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                {getWishlistCount()}
+              </span>
+            )}
           </li>
 
-          <li className="flex items-center gap-1 hover:text-green-400">
-            <IoPersonOutline size={20} />
-            <Link to="/profile">Profile</Link>
-          </li>
+          {currentUser ? (
+            <li className="flex items-center gap-1 hover:text-green-400">
+              <IoPersonOutline size={20} />
+              <Link to="/profile">{currentUser.username}</Link>
+            </li>
+          ) : (
+            <li className="flex items-center gap-1 hover:text-green-400">
+              <IoPersonOutline size={20} />
+              <Link to="/login">Login</Link>
+            </li>
+          )}
 
         </ul>
 
-        {/* Login Button (Desktop) */}
-        <Link
-          to="/login"
-          className="hidden md:block bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
-        >
-          Login
-        </Link>
+        {/* Desktop Auth Buttons */}
+        <div className="hidden md:flex items-center space-x-4">
+          {currentUser ? (
+            <button
+              onClick={handleLogout}
+              className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 flex items-center gap-2"
+            >
+              <IoLogOutOutline size={18} />
+              Logout
+            </button>
+          ) : (
+            <Link
+              to="/login"
+              className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+            >
+              Login
+            </Link>
+          )}
+        </div>
 
         {/* Mobile Menu Button */}
         <button className="md:hidden text-3xl text-white" onClick={() => setOpen(!open)}>
@@ -68,7 +104,7 @@ const Navbar = () => {
 
           <Link onClick={() => setOpen(false)} to="/products" className="block hover:text-green-400">Products</Link>
 
-          <Link onClick={() => setOpen(false)} to="/addtocart" className="flex items-center gap-2 hover:text-green-400 relative">
+          <Link onClick={() => setOpen(false)} to="/cart" className="flex items-center gap-2 hover:text-green-400 relative">
             <IoCartOutline size={22} /> Cart
             {getTotalItems() > 0 && (
               <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
@@ -77,21 +113,37 @@ const Navbar = () => {
             )}
           </Link>
 
-          <Link onClick={() => setOpen(false)} to="/wishlist" className="flex items-center gap-2 hover:text-green-400">
+          <Link onClick={() => setOpen(false)} to="/wishlist" className="flex items-center gap-2 hover:text-green-400 relative">
             <IoHeartOutline size={22} /> Wishlist
+            {getWishlistCount() > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                {getWishlistCount()}
+              </span>
+            )}
           </Link>
 
-          <Link onClick={() => setOpen(false)} to="/profile" className="flex items-center gap-2 hover:text-green-400">
-            <IoPersonOutline size={22} /> Profile
-          </Link>
-
-          <Link
-            onClick={() => setOpen(false)}
-            to="/login"
-            className="block bg-green-500 text-white text-center py-2 rounded-md hover:bg-green-600"
-          >
-            Login
-          </Link>
+          {currentUser ? (
+            <>
+              <Link onClick={() => setOpen(false)} to="/profile" className="flex items-center gap-2 hover:text-green-400">
+                <IoPersonOutline size={22} /> {currentUser.username}
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="w-full bg-red-500 text-white text-center py-2 rounded-md hover:bg-red-600 flex items-center justify-center gap-2"
+              >
+                <IoLogOutOutline size={20} />
+                Logout
+              </button>
+            </>
+          ) : (
+            <Link
+              onClick={() => setOpen(false)}
+              to="/login"
+              className="block bg-green-500 text-white text-center py-2 rounded-md hover:bg-green-600"
+            >
+              Login
+            </Link>
+          )}
         </div>
       )}
     </nav>

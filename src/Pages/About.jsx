@@ -11,9 +11,9 @@ const About = () => {
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-green-500 to-blue-600 text-white py-20">
         <div className="max-w-7xl mx-auto px-4 text-center">
-          <h1 className="text-5xl font-bold mb-6">About Hygiene Hub</h1>
+          <h1 className="text-5xl font-bold mb-6">About Hygiene Hub.</h1>
           <p className="text-xl max-w-3xl mx-auto">
-            Your trusted partner in premium hygiene products since 2020
+            Your trusted partner in premium hygiene products since 2019
           </p>
         </div>
       </section>

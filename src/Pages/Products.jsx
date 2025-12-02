@@ -113,7 +113,7 @@ const Products = () => {
         {/* Products Count */}
         <div className="text-center mb-6">
           <p className="text-gray-600">
-            Showing {filteredProducts.length} of {products.length} products
+             {filteredProducts.length} of {products.length} products
           </p>
         </div>
 
@@ -128,7 +128,7 @@ const Products = () => {
               <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
                 
                 {/* Product Image */}
-                <div className="h-48 bg-gray-100 flex items-center justify-center p-4">
+                <div className="h-48 bg-gray-100 flex items-center justify-center p-4 divimg">
                   <img 
                     src={product.image} 
                     alt={product.name}

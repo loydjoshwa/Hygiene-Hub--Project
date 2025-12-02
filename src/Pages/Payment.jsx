@@ -1,20 +1,22 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useCart } from '../context/CartContext';
+import { useCart } from '../Context/CartContext';
 import { toast } from 'react-toastify';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { Formik, Form, Field } from "formik";
+import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useAuth } from '../Context/CartContext';
 
 const Payment = () => {
   const navigate = useNavigate();
-  const { cartItems, getTotalPrice, clearCart } = useCart();
+  const { cartItems, getTotalPrice, clearCart, createOrder } = useCart();
+  const { currentUser } = useAuth();
   const [loading, setLoading] = useState(false);
 
-  // ------------------ Yup Validation Schema -------------------
   const validationSchema = Yup.object({
     fullName: Yup.string().required("Full Name is required"),
+
     phone: Yup.string()
       .matches(/^\d{10}$/, "Phone number must be 10 digits")
       .required("Phone number is required"),
@@ -34,12 +36,91 @@ const Payment = () => {
     cardName: Yup.string().required("Cardholder name is required"),
 
     expiryDate: Yup.string()
-      .matches(/^\d{2}\/\d{2}$/, "Expiry must be in MM/YY format")
+      .matches(/^\d{2}\/\d{2}$/, "Expiry must be MM/YY format")
       .required("Expiry date is required"),
 
     cvv: Yup.string()
       .matches(/^\d{3}$/, "CVV must be 3 digits")
       .required("CVV is required"),
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      fullName: "",
+      phone: "",
+      address: "",
+      state: "",
+      pincode: "",
+      cardNumber: "",
+      cardName: "",
+      expiryDate: "",
+      cvv: "",
+    },
+
+    validationSchema,
+
+    onSubmit: async (values) => {
+      setLoading(true);
+
+      try {
+       
+        const orderData = {
+          orderId: `ORD${Date.now().toString().slice(-6)}`,
+          userId: currentUser?.id || 'guest',
+          userName: values.fullName,
+          userEmail: currentUser?.email || 'guest@example.com',
+          userPhone: values.phone,
+          shippingAddress: {
+            address: values.address,
+            state: values.state,
+            pincode: values.pincode
+          },
+          paymentMethod: 'card',
+          paymentDetails: {
+            cardLastFour: values.cardNumber.slice(-4),
+            cardName: values.cardName
+          },
+          items: cartItems.map(item => ({
+            productId: item.productId,
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity,
+            image: item.image
+          })),
+          subtotal: getTotalPrice(),
+          shipping: shippingCost,
+          total: finalTotal,
+          orderDate: new Date().toISOString(),
+          status: 'confirmed'
+        };
+
+       
+        await createOrder(orderData);
+        
+        
+        clearCart();
+
+        toast.success(
+          <div>
+            <div className="font-bold">🎉 Order Placed Successfully!</div>
+            
+          </div>,
+          {
+            autoClose: 4000,
+            position: "top-center"
+          }
+        );
+
+        setLoading(false);
+        
+        
+        setTimeout(() => navigate("/"), 1000);
+      } catch (error) {
+        console.error('Order failed:', error);
+        toast.error('Failed to place order. Please try again.');
+        setLoading(false);
+      }
+    },
   });
 
   // Shipping + Total
@@ -54,10 +135,9 @@ const Payment = () => {
         <h1 className="text-4xl font-bold text-center">Complete Your Order</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
-          {/* ================= LEFT SECTION ================= */}
+          {/* LEFT SECTION */}
           <div className="lg:col-span-2">
-
-            {/* ---------------- ORDER SUMMARY ---------------- */}
+            {/* ORDER SUMMARY */}
             <div className="bg-white p-6 rounded-lg shadow mb-6">
               <h2 className="text-xl font-bold mb-4">Order Summary</h2>
 
@@ -90,203 +170,187 @@ const Payment = () => {
               </div>
             </div>
 
-            {/* ---------------- FORM USING FORMIK ---------------- */}
+            {/* FORM */}
             <div className="bg-white p-6 rounded-lg shadow">
+              <form onSubmit={formik.handleSubmit}>
+                <h2 className="text-xl font-bold mb-4">Delivery Address</h2>
 
-              <Formik
-                initialValues={{
-                  fullName: "",
-                  phone: "",
-                  address: "",
-                  state: "",
-                  pincode: "",
-                  cardNumber: "",
-                  cardName: "",
-                  expiryDate: "",
-                  cvv: "",
-                }}
-                validationSchema={validationSchema}
-                onSubmit={(values) => {
-                  setLoading(true);
-
-                  setTimeout(() => {
-                    clearCart();
-
-                    toast.success("🎉 Order Placed Successfully!", {
-                      autoClose: 3000,
-                      position: "top-center"
-                    });
-
-                    setLoading(false);
-
-                    setTimeout(() => navigate("/"), 1500);
-                  }, 1500);
-                }}
-              >
-                {({ errors, touched, setFieldValue }) => (
-                  <Form>
-                    {/* -------- Delivery Address -------- */}
-                    <h2 className="text-xl font-bold mb-4">Delivery Address</h2>
-
-                    {/* FULL NAME */}
-                    <label>Full Name *</label>
-                    <Field
-                      name="fullName"
-                      className="input-field"
-                      placeholder="Enter full name"
-                    />
-                    {errors.fullName && touched.fullName && (
-                      <p className="text-red-600 text-sm">{errors.fullName}</p>
-                    )}
-
-                    {/* PHONE */}
-                    <label className="mt-4 block">Phone Number *</label>
-                    <Field
-                      name="phone"
-                      maxLength="10"
-                      className="input-field"
-                      placeholder="10 digit phone"
-                      onChange={(e) => {
-                        const v = e.target.value.replace(/\D/g, "").slice(0, 10);
-                        setFieldValue("phone", v);
-                      }}
-                    />
-                    {errors.phone && touched.phone && (
-                      <p className="text-red-600 text-sm">{errors.phone}</p>
-                    )}
-
-                    {/* ADDRESS */}
-                    <label className="mt-4 block">Full Address *</label>
-                    <Field
-                      as="textarea"
-                      name="address"
-                      rows="3"
-                      className="input-field"
-                      placeholder="House, Street, Area"
-                    />
-                    {errors.address && touched.address && (
-                      <p className="text-red-600 text-sm">{errors.address}</p>
-                    )}
-
-                    {/* STATE */}
-                    <label className="mt-4 block">State *</label>
-                    <Field
-                      name="state"
-                      className="input-field"
-                      placeholder="State"
-                    />
-                    {errors.state && touched.state && (
-                      <p className="text-red-600 text-sm">{errors.state}</p>
-                    )}
-
-                    {/* PINCODE */}
-                    <label className="mt-4 block">Pincode *</label>
-                    <Field
-                      name="pincode"
-                      maxLength="6"
-                      className="input-field"
-                      placeholder="6 digit pincode"
-                      onChange={(e) => {
-                        const v = e.target.value.replace(/\D/g, "").slice(0, 6);
-                        setFieldValue("pincode", v);
-                      }}
-                    />
-                    {errors.pincode && touched.pincode && (
-                      <p className="text-red-600 text-sm">{errors.pincode}</p>
-                    )}
-
-                    {/* -------- Payment Section -------- */}
-                    <h2 className="text-xl font-bold mt-8 mb-4">Card Payment Details</h2>
-
-                    {/* CARD NUMBER */}
-                    <label>Card Number *</label>
-                    <Field
-                      name="cardNumber"
-                      maxLength="16"
-                      className="input-field"
-                      placeholder="16 digit card number"
-                      onChange={(e) => {
-                        const v = e.target.value.replace(/\D/g, "").slice(0, 16);
-                        setFieldValue("cardNumber", v);
-                      }}
-                    />
-                    {errors.cardNumber && touched.cardNumber && (
-                      <p className="text-red-600 text-sm">{errors.cardNumber}</p>
-                    )}
-
-                    {/* CARD HOLDER NAME */}
-                    <label className="mt-4 block">Cardholder Name *</label>
-                    <Field
-                      name="cardName"
-                      className="input-field"
-                      placeholder="Name on card"
-                    />
-                    {errors.cardName && touched.cardName && (
-                      <p className="text-red-600 text-sm">{errors.cardName}</p>
-                    )}
-
-                    {/* EXPIRY DATE */}
-                    <label className="mt-4 block">Expiry Date (MM/YY) *</label>
-                    <Field
-                      name="expiryDate"
-                      maxLength="5"
-                      className="input-field"
-                      placeholder="MM/YY"
-                      onChange={(e) => {
-                        let v = e.target.value.replace(/\D/g, "");
-                        if (v.length >= 3) v = v.slice(0, 2) + "/" + v.slice(2, 4);
-                        setFieldValue("expiryDate", v);
-                      }}
-                    />
-                    {errors.expiryDate && touched.expiryDate && (
-                      <p className="text-red-600 text-sm">{errors.expiryDate}</p>
-                    )}
-
-                    {/* CVV */}
-                    <label className="mt-4 block">CVV *</label>
-                    <Field
-                      name="cvv"
-                      maxLength="3"
-                      className="input-field"
-                      placeholder="123"
-                      onChange={(e) => {
-                        const v = e.target.value.replace(/\D/g, "").slice(0, 3);
-                        setFieldValue("cvv", v);
-                      }}
-                    />
-                    {errors.cvv && touched.cvv && (
-                      <p className="text-red-600 text-sm">{errors.cvv}</p>
-                    )}
-
-                    {/* BUTTONS */}
-                    <div className="flex gap-4 mt-6">
-                      <button
-                        type="button"
-                        onClick={() => navigate("/addtocart")}
-                        className="border border-green-600 text-green-600 px-6 py-3 rounded-lg"
-                      >
-                        Back to Cart
-                      </button>
-
-                      <button
-                        type="submit"
-                        disabled={loading}
-                        className="bg-green-600 text-white px-6 py-3 rounded-lg"
-                      >
-                        {loading ? "Processing..." : `Pay ₹${finalTotal}`}
-                      </button>
-                    </div>
-                  </Form>
+                {/* FULL NAME */}
+                <label>Full Name *</label>
+                <input
+                  name="fullName"
+                  value={formik.values.fullName}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  className="input-field"
+                  placeholder="Enter full name"
+                />
+                {formik.touched.fullName && formik.errors.fullName && (
+                  <p className="text-red-600 text-sm">{formik.errors.fullName}</p>
                 )}
-              </Formik>
 
+                {/* PHONE */}
+                <label className="mt-4 block">Phone Number *</label>
+                <input
+                  name="phone"
+                  maxLength="10"
+                  value={formik.values.phone}
+                  onChange={(e) => {
+                    const v = e.target.value.replace(/\D/g, "").slice(0, 10);
+                    formik.setFieldValue("phone", v);
+                  }}
+                  onBlur={formik.handleBlur}
+                  className="input-field"
+                  placeholder="10 digit phone"
+                />
+                {formik.touched.phone && formik.errors.phone && (
+                  <p className="text-red-600 text-sm">{formik.errors.phone}</p>
+                )}
+
+                {/* ADDRESS */}
+                <label className="mt-4 block">Full Address *</label>
+                <textarea
+                  name="address"
+                  rows="3"
+                  value={formik.values.address}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  className="input-field"
+                  placeholder="House, Street, Area"
+                />
+                {formik.touched.address && formik.errors.address && (
+                  <p className="text-red-600 text-sm">{formik.errors.address}</p>
+                )}
+
+                {/* STATE */}
+                <label className="mt-4 block">State *</label>
+                <input
+                  name="state"
+                  value={formik.values.state}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  className="input-field"
+                  placeholder="State"
+                />
+                {formik.touched.state && formik.errors.state && (
+                  <p className="text-red-600 text-sm">{formik.errors.state}</p>
+                )}
+
+                {/* PINCODE */}
+                <label className="mt-4 block">Pincode *</label>
+                <input
+                  name="pincode"
+                  maxLength="6"
+                  value={formik.values.pincode}
+                  onChange={(e) => {
+                    const v = e.target.value.replace(/\D/g, "").slice(0, 6);
+                    formik.setFieldValue("pincode", v);
+                  }}
+                  onBlur={formik.handleBlur}
+                  className="input-field"
+                  placeholder="6 digit pincode"
+                />
+                {formik.touched.pincode && formik.errors.pincode && (
+                  <p className="text-red-600 text-sm">{formik.errors.pincode}</p>
+                )}
+
+                {/* PAYMENT SECTION */}
+                <h2 className="text-xl font-bold mt-8 mb-4">Card Payment Details</h2>
+
+                {/* CARD NUMBER */}
+                <label>Card Number *</label>
+                <input
+                  name="cardNumber"
+                  maxLength="16"
+                  value={formik.values.cardNumber}
+                  onChange={(e) => {
+                    const v = e.target.value.replace(/\D/g, "").slice(0, 16);
+                    formik.setFieldValue("cardNumber", v);
+                  }}
+                  onBlur={formik.handleBlur}
+                  className="input-field"
+                  placeholder="16 digit card number"
+                />
+                {formik.touched.cardNumber && formik.errors.cardNumber && (
+                  <p className="text-red-600 text-sm">{formik.errors.cardNumber}</p>
+                )}
+
+                {/* CARD NAME */}
+                <label className="mt-4 block">Cardholder Name *</label>
+                <input
+                  name="cardName"
+                  value={formik.values.cardName}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  className="input-field"
+                  placeholder="Name on card"
+                />
+                {formik.touched.cardName && formik.errors.cardName && (
+                  <p className="text-red-600 text-sm">{formik.errors.cardName}</p>
+                )}
+
+                {/* EXPIRY DATE */}
+                <label className="mt-4 block">Expiry Date (MM/YY) *</label>
+                <input
+                  name="expiryDate"
+                  maxLength="5"
+                  value={formik.values.expiryDate}
+                  onChange={(e) => {
+                    let v = e.target.value.replace(/\D/g, "");
+                    if (v.length >= 3) v = v.slice(0, 2) + "/" + v.slice(2, 4);
+                    formik.setFieldValue("expiryDate", v);
+                  }}
+                  onBlur={formik.handleBlur}
+                  className="input-field"
+                  placeholder="MM/YY"
+                />
+                {formik.touched.expiryDate && formik.errors.expiryDate && (
+                  <p className="text-red-600 text-sm">{formik.errors.expiryDate}</p>
+                )}
+
+                {/* CVV */}
+                <label className="mt-4 block">CVV *</label>
+                <input
+                  name="cvv"
+                  maxLength="3"
+                  value={formik.values.cvv}
+                  onChange={(e) => {
+                    const v = e.target.value.replace(/\D/g, "").slice(0, 3);
+                    formik.setFieldValue("cvv", v);
+                  }}
+                  onBlur={formik.handleBlur}
+                  className="input-field"
+                  placeholder="123"
+                />
+                {formik.touched.cvv && formik.errors.cvv && (
+                  <p className="text-red-600 text-sm">{formik.errors.cvv}</p>
+                )}
+
+                {/* BUTTONS */}
+                <div className="flex gap-4 mt-6">
+                  <button
+                    type="button"
+                    onClick={() => navigate("/cart")}
+                    className="border border-green-600 text-green-600 px-6 py-3 rounded-lg"
+                  >
+                    Back to Cart
+                  </button>
+
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="bg-green-600 text-white px-6 py-3 rounded-lg"
+                  >
+                    {loading ? "Processing..." : `Pay ₹${finalTotal}`}
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
 
-          {/* ================= RIGHT SECTION ================= */}
+          {/* RIGHT SECTION */}
           <div className="bg-white p-6 rounded-lg shadow h-fit">
             <h3 className="font-bold text-lg mb-4">Order Information</h3>
-
             <p className="text-sm">Secure Payment ✓</p>
             <p className="text-sm">Easy Returns ✓</p>
             <p className="text-sm">24/7 Support ✓</p>

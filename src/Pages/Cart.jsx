@@ -16,6 +16,7 @@ const Cart = () => {
     clearCart 
   } = useCart();
  const Navigate=useNavigate()
+ 
   const handleRemoveItem = (productId, productName) => {
     removeFromCart(productId);
     toast.error(`${productName} removed from cart`);

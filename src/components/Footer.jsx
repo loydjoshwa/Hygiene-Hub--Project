@@ -3,7 +3,7 @@ export default function Footer() {
     <footer className="bg-gray-900 text-white py-6 mt-10">
       <div className="max-w-6xl mx-auto px-4 text-center">
 
-        <h2 className="text-2xl font-bold mb-2">Hygene Hub</h2>
+        <h2 className="text-2xl font-bold mb-2">Hygene Hub.</h2>
 
         <p className="text-gray-300 mb-4">
           Premium and refreshing hand wash liquids for everyday hygiene.

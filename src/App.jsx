@@ -11,7 +11,7 @@ import Contact from './Pages/Contact'
 import Cart from './Pages/Cart'
 import Wishlist from './Pages/Wishlist'
 import { CartProvider } from './Context/CartContext'
-import Payment from './Pages/payment'
+import Payment from './Pages/Payment'
 
 const App = () => {
   return (

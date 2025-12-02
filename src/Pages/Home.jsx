@@ -10,7 +10,7 @@ const Home = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const { addToCart } = useCart();
-  const { addToWishlist, currentUser } = useAuth();
+  const { addToWishlist, currentUser, isInWishlist } = useAuth();
   const navigate = useNavigate();
 
   // Fetch 4 products for featured section
@@ -30,6 +30,7 @@ const Home = () => {
 
     fetchFeaturedProducts();
   }, []);
+  
 
   const handleAddToCart = async (product) => {
     if (!currentUser) {
@@ -127,11 +128,11 @@ const Home = () => {
               <div className="text-xl text-gray-600">Loading featured products...</div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 ">
               {featuredProducts.map(product => (
-                <div 
+                <div
                   key={product.id} 
-                  className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 border border-gray-100"
+                  className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 border border-gray-100 divimg"
                 >
                   {/* Product Image */}
                   <div className="h-48 bg-gray-100 flex items-center justify-center p-4">
@@ -171,10 +172,14 @@ const Home = () => {
                       </button>
                       <button
                         onClick={() => handleAddToWishlist(product)}
-                        className="bg-gray-200 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors duration-300"
-                        title="Add to Wishlist"
+                        className={`py-2 px-4 rounded-lg transition-colors ${
+                          isInWishlist(product.id) 
+                            ? 'bg-red-500 text-white hover:bg-red-600' 
+                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        }`}
+                        title={isInWishlist(product.id) ? "Remove from Wishlist" : "Add to Wishlist"}
                       >
-                        ♡
+                        {isInWishlist(product.id) ? '♥' : '♡'}
                       </button>
                     </div>
                   </div>

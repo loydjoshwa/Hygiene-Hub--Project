@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-
 const CartContext = createContext();
 const AuthContext = createContext();
 
@@ -18,7 +17,6 @@ export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
   const [wishlistItems, setWishlistItems] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
-  
 
   // Check if user is logged in on component mount
   useEffect(() => {
@@ -26,9 +24,18 @@ export const CartProvider = ({ children }) => {
     if (user) {
       setCurrentUser(JSON.parse(user));
     }
-    fetchCartItems();
-    fetchWishlistItems();
   }, []);
+
+  // Fetch cart items for current user
+  useEffect(() => {
+    if (currentUser) {
+      fetchUserCartItems();
+      fetchUserWishlistItems();
+    } else {
+      setCartItems([]);
+      setWishlistItems([]);
+    }
+  }, [currentUser]);
 
   // Auth functions
   const login = (user) => {
@@ -38,33 +45,44 @@ export const CartProvider = ({ children }) => {
  
   const logout = () => {
     setCurrentUser(null);
+    setCartItems([]);
+    setWishlistItems([]);
     localStorage.removeItem('currentUser');
-    
   };
 
-  // Fetch cart items from JSON Server
-  const fetchCartItems = async () => {
+  // Fetch cart items for current user from JSON Server
+  const fetchUserCartItems = async () => {
+    if (!currentUser) return;
+    
     try {
       const response = await fetch('http://localhost:3130/cart');
-      const data = await response.json();
-      setCartItems(data);
+      const allCartItems = await response.json();
+      // Filter cart items for current user
+      const userCartItems = allCartItems.filter(item => item.userId === currentUser.id);
+      setCartItems(userCartItems);
     } catch (error) {
       console.error('Error fetching cart items:', error);
+      setCartItems([]);
     }
   };
 
-  // Fetch wishlist items from JSON Server
-  const fetchWishlistItems = async () => {
+  // Fetch wishlist items for current user from JSON Server
+  const fetchUserWishlistItems = async () => {
+    if (!currentUser) return;
+    
     try {
       const response = await fetch('http://localhost:3130/wishlist');
-      const data = await response.json();
-      setWishlistItems(data);
+      const allWishlistItems = await response.json();
+      // Filter wishlist items for current user
+      const userWishlistItems = allWishlistItems.filter(item => item.userId === currentUser.id);
+      setWishlistItems(userWishlistItems);
     } catch (error) {
       console.error('Error fetching wishlist items:', error);
+      setWishlistItems([]);
     }
   };
 
-  // Add item to cart in JSON Server
+  // Add item to cart for current user
   const addToCart = async (product) => {
     if (!currentUser) {
       throw new Error('Please login to add items to cart');
@@ -101,14 +119,14 @@ export const CartProvider = ({ children }) => {
         });
       }
       
-      fetchCartItems();
+      fetchUserCartItems();
     } catch (error) {
       console.error('Error adding to cart:', error);
       throw error;
     }
   };
 
-  // Add item to wishlist
+  // Add item to wishlist for current user
   const addToWishlist = async (product) => {
     if (!currentUser) {
       throw new Error('Please login to add items to wishlist');
@@ -132,7 +150,7 @@ export const CartProvider = ({ children }) => {
             userId: currentUser.id
           })
         });
-        fetchWishlistItems();
+        fetchUserWishlistItems();
         return true;
       }
       return false;
@@ -142,37 +160,41 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  // Remove from wishlist
+  // Remove from wishlist for current user
   const removeFromWishlist = async (productId) => {
     try {
-      const wishlistItem = wishlistItems.find(item => item.productId === productId);
+      const wishlistItem = wishlistItems.find(item => 
+        item.productId === productId && item.userId === currentUser?.id
+      );
       if (wishlistItem) {
         await fetch(`http://localhost:3130/wishlist/${wishlistItem.id}`, {
           method: 'DELETE'
         });
-        fetchWishlistItems();
+        fetchUserWishlistItems();
       }
     } catch (error) {
       console.error('Error removing from wishlist:', error);
     }
   };
 
-  // Remove item from cart
+  // Remove item from cart for current user
   const removeFromCart = async (productId) => {
     try {
-      const cartItem = cartItems.find(item => item.productId === productId);
+      const cartItem = cartItems.find(item => 
+        item.productId === productId && item.userId === currentUser?.id
+      );
       if (cartItem) {
         await fetch(`http://localhost:3130/cart/${cartItem.id}`, {
           method: 'DELETE'
         });
-        fetchCartItems();
+        fetchUserCartItems();
       }
     } catch (error) {
       console.error('Error removing from cart:', error);
     }
   };
 
-  // Update item quantity
+  // Update item quantity for current user
   const updateQuantity = async (productId, newQuantity) => {
     if (newQuantity < 1) {
       removeFromCart(productId);
@@ -180,7 +202,9 @@ export const CartProvider = ({ children }) => {
     }
 
     try {
-      const cartItem = cartItems.find(item => item.productId === productId);
+      const cartItem = cartItems.find(item => 
+        item.productId === productId && item.userId === currentUser?.id
+      );
       if (cartItem) {
         await fetch(`http://localhost:3130/cart/${cartItem.id}`, {
           method: 'PATCH',
@@ -191,7 +215,7 @@ export const CartProvider = ({ children }) => {
             quantity: newQuantity
           })
         });
-        fetchCartItems();
+        fetchUserCartItems();
       }
     } catch (error) {
       console.error('Error updating quantity:', error);
@@ -230,25 +254,49 @@ export const CartProvider = ({ children }) => {
     return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
   };
 
-  // Clear entire cart
+  // Clear entire cart for current user
   const clearCart = async () => {
     try {
+      const userCartItems = cartItems.filter(item => item.userId === currentUser?.id);
       await Promise.all(
-        cartItems.map(item => 
+        userCartItems.map(item => 
           fetch(`http://localhost:3130/cart/${item.id}`, {
             method: 'DELETE'
           })
         )
       );
-      fetchCartItems();
+      fetchUserCartItems();
     } catch (error) {
       console.error('Error clearing cart:', error);
     }
   };
 
-  // Check if product is in wishlist
+  // Store order in database
+  const createOrder = async (orderData) => {
+    try {
+      const response = await fetch('http://localhost:3130/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...orderData,
+          orderDate: new Date().toISOString(),
+          status: 'confirmed'
+        })
+      });
+      return await response.json();
+    } catch (error) {
+      console.error('Error creating order:', error);
+      throw error;
+    }
+  };
+
+  // Check if product is in wishlist for current user
   const isInWishlist = (productId) => {
-    return wishlistItems.some(item => item.productId === productId);
+    return wishlistItems.some(item => 
+      item.productId === productId && item.userId === currentUser?.id
+    );
   };
 
   const cartValue = {
@@ -261,7 +309,8 @@ export const CartProvider = ({ children }) => {
     getQuantity,
     getTotalItems,
     getTotalPrice,
-    clearCart
+    clearCart,
+    createOrder
   };
 
   const authValue = {

@@ -11,6 +11,7 @@ import Contact from './Pages/Contact'
 import Cart from './Pages/Cart'
 import Wishlist from './Pages/Wishlist'
 import { CartProvider } from './Context/CartContext'
+import Payment from './Pages/payment'
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
           <Route path='/contact' element={<Contact />} />
           <Route path='/cart' element={<Cart />} />
           <Route path='/wishlist' element={<Wishlist />} />
+          <Route path='/payment' element={<Payment />} />
         </Routes>
         <ToastContainer />
       </div>

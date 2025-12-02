@@ -1,6 +1,6 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { useCart } from '../context/CartContext';
+import { Link, useNavigate } from 'react-router-dom';
+import { useCart } from '../Context/CartContext';
 import { toast } from 'react-toastify';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -15,7 +15,7 @@ const Cart = () => {
     getTotalPrice,
     clearCart 
   } = useCart();
-
+ const Navigate=useNavigate()
   const handleRemoveItem = (productId, productName) => {
     removeFromCart(productId);
     toast.error(`${productName} removed from cart`);
@@ -45,11 +45,11 @@ const Cart = () => {
   };
 
   const handleCheckout = () => {
-    if (cartItems.length === 0) {
-      toast.error('Your cart is empty');
-      return;
-    }
-    toast.success('Proceeding to checkout!');
+    // if (cartItems.length === 0) {
+    //   toast.error('Your cart is empty');
+    //   return;
+    // }
+    Navigate("/payment");
   };
 
   const shippingCost = getTotalItems() > 0 ? 40 : 0;

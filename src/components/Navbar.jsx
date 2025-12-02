@@ -59,7 +59,7 @@ const Navbar = () => {
           {currentUser ? (
             <li className="flex items-center gap-1 hover:text-green-400">
               <IoPersonOutline size={20} />
-              <Link to="/profile">{currentUser.username}</Link>
+              <Link to="/">{currentUser.username}</Link>
             </li>
           ) : (
             <li className="flex items-center gap-1 hover:text-green-400">
@@ -124,7 +124,7 @@ const Navbar = () => {
 
           {currentUser ? (
             <>
-              <Link onClick={() => setOpen(false)} to="/profile" className="flex items-center gap-2 hover:text-green-400">
+              <Link onClick={() => setOpen(false)} to="/" className="flex items-center gap-2 hover:text-green-400">
                 <IoPersonOutline size={22} /> {currentUser.username}
               </Link>
               <button

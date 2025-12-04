@@ -1,32 +1,22 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import axios from "axios";   
 
 const CartContext = createContext();
 const AuthContext = createContext();
 
-export const useCart = () => {
-  const context = useContext(CartContext);
-  return context;
-}; 
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  return context;
-};
+export const useCart = () => useContext(CartContext);
+export const useAuth = () => useContext(AuthContext);
 
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
   const [wishlistItems, setWishlistItems] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
 
-  // Check if user is logged in on component mount
   useEffect(() => {
     const user = localStorage.getItem('currentUser');
-    if (user) {
-      setCurrentUser(JSON.parse(user));
-    }
+    if (user) setCurrentUser(JSON.parse(user));
   }, []);
 
-  // Fetch cart items for current user
   useEffect(() => {
     if (currentUser) {
       fetchUserCartItems();
@@ -37,12 +27,11 @@ export const CartProvider = ({ children }) => {
     }
   }, [currentUser]);
 
-  // Auth functions
   const login = (user) => {
     setCurrentUser(user);
     localStorage.setItem('currentUser', JSON.stringify(user));
   };
- 
+
   const logout = () => {
     setCurrentUser(null);
     setCartItems([]);
@@ -50,254 +39,187 @@ export const CartProvider = ({ children }) => {
     localStorage.removeItem('currentUser');
   };
 
-  // Fetch cart items for current user from JSON Server
   const fetchUserCartItems = async () => {
     if (!currentUser) return;
-    
     try {
-      const response = await fetch('http://localhost:3130/cart');
-      const allCartItems = await response.json();
-      // Filter cart items for current user
-      const userCartItems = allCartItems.filter(item => item.userId === currentUser.id);
-      setCartItems(userCartItems);
+      const { data }  = await axios.get("http://localhost:3130/cart");
+      const userItems = data.filter(item => item.userId === currentUser.id);
+      setCartItems(userItems);
     } catch (error) {
-      console.error('Error fetching cart items:', error);
+      console.error("Error fetching cart items:", error);
       setCartItems([]);
     }
   };
 
-  // Fetch wishlist items for current user from JSON Server
   const fetchUserWishlistItems = async () => {
     if (!currentUser) return;
-    
     try {
-      const response = await fetch('http://localhost:3130/wishlist');
-      const allWishlistItems = await response.json();
-      // Filter wishlist items for current user
-      const userWishlistItems = allWishlistItems.filter(item => item.userId === currentUser.id);
-      setWishlistItems(userWishlistItems);
+      const { data } = await axios.get("http://localhost:3130/wishlist");
+      const userItems = data.filter(item => item.userId === currentUser.id);
+      setWishlistItems(userItems);
     } catch (error) {
-      console.error('Error fetching wishlist items:', error);
+      console.error("Error fetching wishlist items:", error);
       setWishlistItems([]);
     }
   };
 
-  // Add item to cart for current user
   const addToCart = async (product) => {
-    if (!currentUser) {
-      throw new Error('Please login to add items to cart');
-    }
+    if (!currentUser) throw new Error("Please login");
 
     try {
-      const existingItem = cartItems.find(item => item.productId === product.id);
-      
-      if (existingItem) {
-        await fetch(`http://localhost:3130/cart/${existingItem.id}`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            quantity: existingItem.quantity + 1
-          })
+      const existing = cartItems.find(item => item.productId === product.id);
+
+      if (existing) {
+        await axios.patch(`http://localhost:3130/cart/${existing.id}`, {
+          quantity: existing.quantity + 1
         });
       } else {
-        await fetch('http://localhost:3130/cart', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            productId: product.id,
-            name: product.name,
-            price: product.price,
-            image: product.image,
-            description: product.description,
-            quantity: 1,
-            userId: currentUser.id
-          })
+        await axios.post("http://localhost:3130/cart", {
+          productId: product.id,
+          name: product.name,
+          price: product.price,
+          image: product.image,
+          description: product.description,
+          quantity: 1,
+          userId: currentUser.id
         });
       }
-      
+
       fetchUserCartItems();
     } catch (error) {
-      console.error('Error adding to cart:', error);
+      console.error("Error adding to cart:", error);
       throw error;
     }
   };
 
-  // Add item to wishlist for current user
   const addToWishlist = async (product) => {
-    if (!currentUser) {
-      throw new Error('Please login to add items to wishlist');
-    }
+    if (!currentUser) throw new Error("Please login");
 
     try {
-      const existingItem = wishlistItems.find(item => item.productId === product.id);
-      
-      if (!existingItem) {
-        await fetch('http://localhost:3130/wishlist', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            productId: product.id,
-            name: product.name,
-            price: product.price,
-            image: product.image,
-            description: product.description,
-            userId: currentUser.id
-          })
+      const exists = wishlistItems.find(item => item.productId === product.id);
+
+      if (!exists) {
+        await axios.post("http://localhost:3130/wishlist", {
+          productId: product.id,
+          name: product.name,
+          price: product.price,
+          image: product.image,
+          description: product.description,
+          userId: currentUser.id
         });
         fetchUserWishlistItems();
         return true;
       }
       return false;
     } catch (error) {
-      console.error('Error adding to wishlist:', error);
+      console.error("Error adding to wishlist:", error);
       throw error;
     }
   };
 
-  // Remove from wishlist for current user
   const removeFromWishlist = async (productId) => {
     try {
-      const wishlistItem = wishlistItems.find(item => 
-        item.productId === productId && item.userId === currentUser?.id
+      const item = wishlistItems.find(
+        i => i.productId === productId && i.userId === currentUser?.id
       );
-      if (wishlistItem) {
-        await fetch(`http://localhost:3130/wishlist/${wishlistItem.id}`, {
-          method: 'DELETE'
-        });
+      if (item) {
+        await axios.delete(`http://localhost:3130/wishlist/${item.id}`);
         fetchUserWishlistItems();
       }
     } catch (error) {
-      console.error('Error removing from wishlist:', error);
+      console.error("Error removing wishlist:", error);
     }
   };
 
-  // Remove item from cart for current user
   const removeFromCart = async (productId) => {
     try {
-      const cartItem = cartItems.find(item => 
-        item.productId === productId && item.userId === currentUser?.id
+      const item = cartItems.find(
+        i => i.productId === productId && i.userId === currentUser?.id
       );
-      if (cartItem) {
-        await fetch(`http://localhost:3130/cart/${cartItem.id}`, {
-          method: 'DELETE'
-        });
+      if (item) {
+        await axios.delete(`http://localhost:3130/cart/${item.id}`);
         fetchUserCartItems();
       }
     } catch (error) {
-      console.error('Error removing from cart:', error);
+      console.error("Error removing cart:", error);
     }
   };
 
-  // Update item quantity for current user
-  const updateQuantity = async (productId, newQuantity) => {
-    if (newQuantity < 1) {
-      removeFromCart(productId);
-      return;
-    }
+  const updateQuantity = async (productId, newQty) => {
+    if (newQty < 1) return removeFromCart(productId);
 
     try {
-      const cartItem = cartItems.find(item => 
-        item.productId === productId && item.userId === currentUser?.id
+      const item = cartItems.find(
+        i => i.productId === productId && i.userId === currentUser?.id
       );
-      if (cartItem) {
-        await fetch(`http://localhost:3130/cart/${cartItem.id}`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            quantity: newQuantity
-          })
+      if (item) {
+        await axios.patch(`http://localhost:3130/cart/${item.id}`, {
+          quantity: newQty
         });
         fetchUserCartItems();
       }
     } catch (error) {
-      console.error('Error updating quantity:', error);
+      console.error("Error updating quantity:", error);
     }
   };
 
-  // Increase quantity by 1
   const increaseQuantity = (productId) => {
-    const currentItem = cartItems.find(item => item.productId === productId);
-    if (currentItem) {
-      updateQuantity(productId, currentItem.quantity + 1);
-    }
+    const item = cartItems.find(i => i.productId === productId);
+    if (item) updateQuantity(productId, item.quantity + 1);
   };
 
-  // Decrease quantity by 1
   const decreaseQuantity = (productId) => {
-    const currentItem = cartItems.find(item => item.productId === productId);
-    if (currentItem) {
-      updateQuantity(productId, currentItem.quantity - 1);
-    }
+    const item = cartItems.find(i => i.productId === productId);
+    if (item) updateQuantity(productId, item.quantity - 1);
   };
 
-  // Get quantity of specific item
   const getQuantity = (productId) => {
-    const item = cartItems.find(item => item.productId === productId);
+    const item = cartItems.find(i => i.productId === productId);
     return item ? item.quantity : 0;
   };
 
-  // Get total number of items in cart
-  const getTotalItems = () => {
-    return cartItems.reduce((total, item) => total + item.quantity, 0);
-  };
+  const getTotalItems = () =>
+    cartItems.reduce((t, i) => t + i.quantity, 0);
 
-  // Get total price of all items in cart
-  const getTotalPrice = () => {
-    return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
-  };
+  const getTotalPrice = () =>
+    cartItems.reduce((t, i) => t + i.price * i.quantity, 0);
 
-  // Clear entire cart for current user
   const clearCart = async () => {
+    if (!currentUser) return;
+
     try {
-      const userCartItems = cartItems.filter(item => item.userId === currentUser?.id);
+      const { data } = await axios.get("http://localhost:3130/cart");
+      const userItems = data.filter(i => i.userId === currentUser.id);
+
       await Promise.all(
-        userCartItems.map(item => 
-          fetch(`http://localhost:3130/cart/${item.id}`, {
-            method: 'DELETE'
-          })
+        userItems.map(item =>
+          axios.delete(`http://localhost:3130/cart/${item.id}`)
         )
       );
+
+      setCartItems([]);
       fetchUserCartItems();
     } catch (error) {
-      console.error('Error clearing cart:', error);
+      console.error("Error clearing cart:", error);
     }
   };
 
-  // Store order in database
   const createOrder = async (orderData) => {
     try {
-      const response = await fetch('http://localhost:3130/orders', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...orderData,
-          orderDate: new Date().toISOString(),
-          status: 'confirmed'
-        })
+      const { data } = await axios.post("http://localhost:3130/orders", {
+        ...orderData,
+        orderDate: new Date().toISOString(),
+        status: "confirmed"
       });
-      return await response.json();
+      return data;
     } catch (error) {
-      console.error('Error creating order:', error);
+      console.error("Error creating order:", error);
       throw error;
     }
   };
 
-  // Check if product is in wishlist for current user
-  const isInWishlist = (productId) => {
-    return wishlistItems.some(item => 
-      item.productId === productId && item.userId === currentUser?.id
-    );
-  };
+  const isInWishlist = (productId) =>
+    wishlistItems.some(i => i.productId === productId);
 
   const cartValue = {
     cartItems,

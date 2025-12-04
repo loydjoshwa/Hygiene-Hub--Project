@@ -74,14 +74,12 @@ const Wishlist = () => {
       
       <div className="pt-20 pb-16">
         <div className="max-w-7xl mx-auto px-4">
-          {/* Header */}
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-gray-800 mb-4">My Wishlist</h1>
             <p className="text-gray-600">Your favorite handwash products</p>
           </div>
 
           {wishlistItems.length === 0 ? (
-            // Empty Wishlist State
             <div className="text-center py-16 bg-white rounded-lg shadow-md">
               <div className="text-6xl mb-4">❤️</div>
               <h2 className="text-2xl font-bold text-gray-800 mb-4">Your wishlist is empty</h2>
@@ -95,7 +93,6 @@ const Wishlist = () => {
             </div>
           ) : (
             <div className="space-y-6">
-              {/* Wishlist Header */}
               <div className="bg-white rounded-lg shadow-md p-6">
                 <div className="flex justify-between items-center">
                   <h2 className="text-xl font-bold text-gray-800">
@@ -110,11 +107,9 @@ const Wishlist = () => {
                 </div>
               </div>
 
-              {/* Wishlist Items */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {wishlistItems.map((item) => (
                   <div key={item.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300">
-                    {/* Product Image */}
                     <div className="h-48 bg-gray-100 flex items-center justify-center p-4">
                       <img
                         src={item.image}
@@ -123,7 +118,6 @@ const Wishlist = () => {
                       />
                     </div>
 
-                    {/* Product Info */}
                     <div className="p-4">
                       <h3 className="text-lg font-semibold text-gray-800 mb-2 line-clamp-2">
                         {item.name}
@@ -136,7 +130,6 @@ const Wishlist = () => {
                         <span className="text-2xl font-bold text-green-600">₹{item.price}</span>
                       </div>
 
-                      {/* Action Buttons */}
                       <div className="flex gap-2">
                         <button
                           onClick={() => handleAddToCart(item)}

@@ -46,10 +46,7 @@ const Cart = () => {
   };
 
   const handleCheckout = () => {
-    // if (cartItems.length === 0) {
-    //   toast.error('Your cart is empty');
-    //   return;
-    // }
+   
     Navigate("/payment");
   };
 

@@ -14,8 +14,7 @@ const Login = () => {
     email: Yup.string().email("Please enter a valid email").required("Please enter email"),
     password: Yup.string().required("Enter a password")
   })
-
-  const formik = useFormik({
+ const formik = useFormik({
     initialValues: {
       email: "",
       password: ""
@@ -39,10 +38,9 @@ const Login = () => {
           return;
         }
 
-        // Use the auth context to login
-        login(user); // This sets the user in context and localStorage
         
-        // Optional: You can still store in localStorage if needed
+        login(user);
+        
         localStorage.setItem("email", values.email);
         localStorage.setItem("password", values.password);
 

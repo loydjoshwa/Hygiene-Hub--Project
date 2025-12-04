@@ -8,7 +8,6 @@ const About = () => {
     <div className="min-h-screen bg-white">
       <Navbar />
       
-      {/* Hero Section */}
       <section className="bg-gradient-to-r from-green-500 to-blue-600 text-white py-20">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <h1 className="text-5xl font-bold mb-6">About Hygiene Hub.</h1>
@@ -18,7 +17,6 @@ const About = () => {
         </div>
       </section>
 
-      {/* Mission Section */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -41,7 +39,7 @@ const About = () => {
                   Shop Products
                 </Link>
                 <Link
-                  to="/contact"
+                  
                   className="border-2 border-green-600 text-green-600 px-6 py-3 rounded-lg font-semibold hover:bg-green-600 hover:text-white transition-colors duration-300"
                 >
                   Contact Us
@@ -80,7 +78,6 @@ const About = () => {
         </div>
       </section>
 
-      {/* Story Section */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
@@ -124,7 +121,7 @@ const About = () => {
         </div>
       </section>
 
-      {/* Team Section */}
+      
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
@@ -167,7 +164,6 @@ const About = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
       <section className="py-16 bg-gradient-to-r from-green-500 to-blue-600 text-white">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h2 className="text-4xl font-bold mb-6">Ready to Experience the Difference?</h2>
@@ -182,7 +178,7 @@ const About = () => {
               Shop Now
             </Link>
             <Link
-              to="/contact"
+              
               className="border-2 border-white text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-white hover:text-green-600 transition-colors duration-300"
             >
               Get In Touch

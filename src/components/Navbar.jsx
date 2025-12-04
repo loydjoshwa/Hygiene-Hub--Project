@@ -23,13 +23,11 @@ const Navbar = () => {
     <nav className="bg-[#1e293b] text-white fixed top-0 left-0 w-full z-50 shadow-md">
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
 
-        {/* Logo */}
         <Link to="/" className="flex items-center gap-1">
           <p className="text-2xl font-extrabold text-blue-400">Hygiene</p>
           <p className="text-2xl font-extrabold text-green-400">Hub.</p>
         </Link>
 
-        {/* Desktop Menu */}
         <ul className="hidden md:flex items-center gap-8 text-lg font-medium">
 
           <li><Link className="hover:text-green-400" to="/">Home</Link></li>
@@ -55,6 +53,12 @@ const Navbar = () => {
               </span>
             )}
           </li>
+          {currentUser && (
+  <li className="hover:text-green-400">
+    <Link to="/myorders">My Orders</Link>
+  </li>
+)}
+
 
           {currentUser ? (
             <li className="flex items-center gap-1 hover:text-green-400">
@@ -70,7 +74,6 @@ const Navbar = () => {
 
         </ul>
 
-        {/* Desktop Auth Buttons */}
         <div className="hidden md:flex items-center space-x-4">
           {currentUser ? (
             <button
@@ -90,13 +93,11 @@ const Navbar = () => {
           )}
         </div>
 
-        {/* Mobile Menu Button */}
         <button className="md:hidden text-3xl text-white" onClick={() => setOpen(!open)}>
           {open ? <IoClose /> : <IoMenu />}
         </button>
       </div>
 
-      {/* Mobile Menu */}
       {open && (
         <div className="md:hidden bg-[#1e293b] text-white shadow-lg p-6 space-y-5 text-lg font-medium">
 
@@ -121,6 +122,12 @@ const Navbar = () => {
               </span>
             )}
           </Link>
+          {currentUser && (
+  <Link onClick={() => setOpen(false)} to="/myorders" className="block hover:text-green-400">
+    My Orders
+  </Link>
+)}
+
 
           {currentUser ? (
             <>

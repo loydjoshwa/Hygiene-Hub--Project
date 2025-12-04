@@ -9,11 +9,12 @@ import { Link, useNavigate } from 'react-router-dom';
 const Register = () => {
   const navigate = useNavigate();
 
-  // Yup validation schema
+  
   const signupValidation = Yup.object({
     username: Yup.string()
       .min(3, "Minimum 3 characters needed")
-      .required("Please enter username"),
+      .required("Please enter username")
+      .matches(/^(?!\d+$).*/, "Username cannot be only numbers"),
     email: Yup.string()
       .email("Please enter a valid email")
       .required("Please enter email"),
@@ -25,7 +26,7 @@ const Register = () => {
       .required("Confirm password is required")
   });
 
-  // Formik setup
+ 
   const formik = useFormik({
     initialValues: {
       username: "",
@@ -36,7 +37,7 @@ const Register = () => {
     validationSchema: signupValidation,
     onSubmit: async (values) => {
       try {
-        // Check if email already exists
+       
         const res = await axios.get("http://localhost:3130/users");
         const emailList = res.data.map((user) => user.email);
 
@@ -45,7 +46,6 @@ const Register = () => {
           return;
         }
 
-        //save newuseer
         await axios.post("http://localhost:3130/users", {
           username: values.username,
           email: values.email,
@@ -85,7 +85,6 @@ const Register = () => {
         <form onSubmit={formik.handleSubmit}>
           <div className="space-y-4">
 
-            {/* Username */}
             <div>
               <label className="block text-sm font-medium text-gray-100 mb-1">
                 Username
@@ -104,7 +103,6 @@ const Register = () => {
               )}
             </div>
 
-            {/* Email */}
             <div>
               <label className="block text-sm font-medium text-gray-100 mb-1">
                 Email
@@ -123,7 +121,6 @@ const Register = () => {
               )}
             </div>
 
-            {/* Password */}
             <div>
               <label className="block text-sm font-medium text-gray-100 mb-1">
                 Password
@@ -142,7 +139,6 @@ const Register = () => {
               )}
             </div>
 
-            {/* Confirm Password */}
             <div>
               <label className="block text-sm font-medium text-gray-100 mb-1">
                 Confirm Password

@@ -8,10 +8,13 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useAuth } from '../Context/CartContext';
 
+
+
 const Payment = () => {
   const navigate = useNavigate();
   const { cartItems, getTotalPrice, clearCart, createOrder } = useCart();
   const { currentUser } = useAuth();
+
   const [loading, setLoading] = useState(false);
 
   const validationSchema = Yup.object({
@@ -58,11 +61,28 @@ const Payment = () => {
     },
 
     validationSchema,
+    
 
     onSubmit: async (values) => {
-      setLoading(true);
+       const updatedUser = JSON.parse(localStorage.getItem("currentUser"));
 
+  if (!updatedUser) {
+    console.log("user not logged in")
+    navigate("/login");
+    return;
+  }
+
+  
+  if (!currentUser) {
+    toast.error("user not logged in");
+    navigate("/login");
+    return;
+  }
+
+      setLoading(true);
+      
       try {
+        
        
         const orderData = {
           orderId: `ORD${Date.now().toString().slice(-6)}`,
@@ -98,11 +118,11 @@ const Payment = () => {
         await createOrder(orderData);
         
         
-        clearCart();
+        await clearCart();
 
         toast.success(
           <div>
-            <div className="font-bold">🎉 Order Placed Successfully!</div>
+            <div className="font-bold"> Order Placed Successfully!</div>
             
           </div>,
           {
@@ -123,7 +143,6 @@ const Payment = () => {
     },
   });
 
-  // Shipping + Total
   const shippingCost = cartItems.length > 0 ? 40 : 0;
   const finalTotal = getTotalPrice() + shippingCost;
 
@@ -135,9 +154,7 @@ const Payment = () => {
         <h1 className="text-4xl font-bold text-center">Complete Your Order</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
-          {/* LEFT SECTION */}
           <div className="lg:col-span-2">
-            {/* ORDER SUMMARY */}
             <div className="bg-white p-6 rounded-lg shadow mb-6">
               <h2 className="text-xl font-bold mb-4">Order Summary</h2>
 
@@ -170,12 +187,10 @@ const Payment = () => {
               </div>
             </div>
 
-            {/* FORM */}
             <div className="bg-white p-6 rounded-lg shadow">
               <form onSubmit={formik.handleSubmit}>
                 <h2 className="text-xl font-bold mb-4">Delivery Address</h2>
 
-                {/* FULL NAME */}
                 <label>Full Name *</label>
                 <input
                   name="fullName"
@@ -189,7 +204,6 @@ const Payment = () => {
                   <p className="text-red-600 text-sm">{formik.errors.fullName}</p>
                 )}
 
-                {/* PHONE */}
                 <label className="mt-4 block">Phone Number *</label>
                 <input
                   name="phone"
@@ -207,7 +221,6 @@ const Payment = () => {
                   <p className="text-red-600 text-sm">{formik.errors.phone}</p>
                 )}
 
-                {/* ADDRESS */}
                 <label className="mt-4 block">Full Address *</label>
                 <textarea
                   name="address"
@@ -222,7 +235,6 @@ const Payment = () => {
                   <p className="text-red-600 text-sm">{formik.errors.address}</p>
                 )}
 
-                {/* STATE */}
                 <label className="mt-4 block">State *</label>
                 <input
                   name="state"
@@ -236,7 +248,6 @@ const Payment = () => {
                   <p className="text-red-600 text-sm">{formik.errors.state}</p>
                 )}
 
-                {/* PINCODE */}
                 <label className="mt-4 block">Pincode *</label>
                 <input
                   name="pincode"
@@ -254,10 +265,8 @@ const Payment = () => {
                   <p className="text-red-600 text-sm">{formik.errors.pincode}</p>
                 )}
 
-                {/* PAYMENT SECTION */}
                 <h2 className="text-xl font-bold mt-8 mb-4">Card Payment Details</h2>
 
-                {/* CARD NUMBER */}
                 <label>Card Number *</label>
                 <input
                   name="cardNumber"
@@ -275,7 +284,6 @@ const Payment = () => {
                   <p className="text-red-600 text-sm">{formik.errors.cardNumber}</p>
                 )}
 
-                {/* CARD NAME */}
                 <label className="mt-4 block">Cardholder Name *</label>
                 <input
                   name="cardName"
@@ -289,7 +297,6 @@ const Payment = () => {
                   <p className="text-red-600 text-sm">{formik.errors.cardName}</p>
                 )}
 
-                {/* EXPIRY DATE */}
                 <label className="mt-4 block">Expiry Date (MM/YY) *</label>
                 <input
                   name="expiryDate"
@@ -308,7 +315,6 @@ const Payment = () => {
                   <p className="text-red-600 text-sm">{formik.errors.expiryDate}</p>
                 )}
 
-                {/* CVV */}
                 <label className="mt-4 block">CVV *</label>
                 <input
                   name="cvv"
@@ -326,7 +332,6 @@ const Payment = () => {
                   <p className="text-red-600 text-sm">{formik.errors.cvv}</p>
                 )}
 
-                {/* BUTTONS */}
                 <div className="flex gap-4 mt-6">
                   <button
                     type="button"
@@ -348,7 +353,6 @@ const Payment = () => {
             </div>
           </div>
 
-          {/* RIGHT SECTION */}
           <div className="bg-white p-6 rounded-lg shadow h-fit">
             <h3 className="font-bold text-lg mb-4">Order Information</h3>
             <p className="text-sm">Secure Payment ✓</p>

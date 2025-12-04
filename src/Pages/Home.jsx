@@ -13,7 +13,6 @@ const Home = () => {
   const { addToWishlist, currentUser, isInWishlist } = useAuth();
   const navigate = useNavigate();
 
-  // Fetch 4 products for featured section
   useEffect(() => {
     const fetchFeaturedProducts = async () => {
       try {
@@ -70,11 +69,9 @@ const Home = () => {
     <>
      <Navbar />
     <div> 
-      {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-blue-50 to-green-50 py-20">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-between">
-            {/* Hero Text */}
             <div className="md:w-1/2 mb-10 md:mb-0">
               <h1 className="text-5xl font-bold text-gray-800 mb-6 leading-tight">
                 Premium Hygiene 
@@ -100,7 +97,6 @@ const Home = () => {
               </div>
             </div>
             
-            {/* Hero Image/Graphic */}
             <div className="md:w-1/2 flex justify-center">
               <div className="bg-green-100 rounded-2xl p-8 shadow-xl">
                 <div className="text-6xl text-green-600 text-center">
@@ -115,7 +111,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Featured Products Section */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
@@ -134,7 +129,6 @@ const Home = () => {
                   key={product.id} 
                   className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 border border-gray-100 divimg"
                 >
-                  {/* Product Image */}
                   <div className="h-48 bg-gray-100 flex items-center justify-center p-4">
                     <img 
                       src={product.image} 
@@ -143,7 +137,6 @@ const Home = () => {
                     />
                   </div>
 
-                  {/* Product Info */}
                   <div className="p-4">
                     <h3 className="text-lg font-semibold text-gray-800 mb-2 line-clamp-2">
                       {product.name}
@@ -162,7 +155,6 @@ const Home = () => {
                       </div>
                     </div>
 
-                    {/* Action Buttons */}
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleAddToCart(product)}
@@ -188,7 +180,6 @@ const Home = () => {
             </div>
           )}
 
-          {/* View All Products Button */}
           <div className="text-center mt-12">
             <Link
               to="/products"

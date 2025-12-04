@@ -13,7 +13,6 @@ const Products = () => {
   const { addToCart } = useCart();
   const { addToWishlist, currentUser, isInWishlist } = useAuth();
 
-  // Fetch products from JSON server
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -31,7 +30,6 @@ const Products = () => {
     fetchProducts();
   }, []);
 
-  // Filter products based on search
   useEffect(() => {
     if (searchTerm) {
       const filtered = products.filter(product =>
@@ -44,7 +42,6 @@ const Products = () => {
     }
   }, [searchTerm, products]);
 
-  // Add to cart function
   const handleAddToCart = async (product) => {
     if (!currentUser) {
       toast.error('Please login to add items to cart');
@@ -59,7 +56,6 @@ const Products = () => {
     }
   };
 
-  // Add to wishlist function
   const handleAddToWishlist = async (product) => {
     if (!currentUser) {
       toast.error('Please login to add items to wishlist');
@@ -91,13 +87,11 @@ const Products = () => {
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 py-8">
         
-        {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-800 mb-4">Premium Handwash Collection</h1>
           <p className="text-gray-600 text-lg">Discover our range of natural and refreshing handwash products</p>
         </div>
 
-        {/* Centered Search Bar */}
         <div className="flex justify-center mb-8">
           <div className="w-full max-w-md">
             <input
@@ -110,14 +104,12 @@ const Products = () => {
           </div>
         </div>
 
-        {/* Products Count */}
         <div className="text-center mb-6">
           <p className="text-gray-600">
              {filteredProducts.length} of {products.length} products
           </p>
         </div>
 
-        {/* Products Grid */}
         {filteredProducts.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-xl text-gray-600">No products found. Try different search terms.</p>
@@ -127,7 +119,6 @@ const Products = () => {
             {filteredProducts.map(product => (
               <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
                 
-                {/* Product Image */}
                 <div className="h-48 bg-gray-100 flex items-center justify-center p-4 divimg">
                   <img 
                     src={product.image} 
@@ -139,7 +130,6 @@ const Products = () => {
                   />
                 </div>
 
-                {/* Product Info */}
                 <div className="p-4">
                   <h3 className="text-lg font-semibold text-gray-800 mb-2 line-clamp-2">{product.name}</h3>
                   <p className="text-gray-600 text-sm mb-3 line-clamp-2">{product.description}</p>
@@ -148,7 +138,6 @@ const Products = () => {
                     <span className="text-2xl font-bold text-green-600">₹{product.price}</span>
                   </div>
 
-                  {/* Rating */}
                   <div className="flex items-center mb-3">
                     <div className="flex text-yellow-400">
                       {'★'.repeat(Math.floor(product.rating))}
@@ -157,7 +146,6 @@ const Products = () => {
                     <span className="text-sm text-gray-600 ml-2">{product.rating}</span>
                   </div>
 
-                  {/* Action Buttons */}
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleAddToCart(product)}

@@ -1,4 +1,3 @@
-// AdminLayout.jsx
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -44,7 +43,6 @@ const AdminLayout = ({ children }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#00CAFF]/5 to-[#4300FF]/5">
-      {/* Sidebar */}
       <div 
         className={`fixed inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-[#4300FF] to-[#0065F8] text-white transform transition-all duration-300 shadow-2xl ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'

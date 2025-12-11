@@ -12,9 +12,7 @@ const Login = () => {
   const { login } = useAuth();
   const [loading, setLoading] = useState(false);
 
-  // Clear any existing admin session when login page loads
   useEffect(() => {
-    // Don't clear adminLogged here - we'll clear it only for regular user logins
   }, []);
 
   const formik = useFormik({
@@ -34,26 +32,21 @@ const Login = () => {
       setLoading(true);
 
       try {
-        // IMPORTANT: Clear previous session data to prevent conflicts
         localStorage.removeItem('adminEmail');
         localStorage.removeItem('adminName');
 
-        // First, check if it's admin
         try {
           const adminRes = await axios.get('http://localhost:3130/Admin');
-          // Changed from /Admin to /admins (lowercase, more common)
           const admin = adminRes.data?.find(
             a => a.email === values.email && a.password === values.password
           );
 
           if (admin) {
-            // Admin login successful
-            // Clear regular user session data
+            
             localStorage.removeItem('user');
             localStorage.removeItem('userEmail');
             localStorage.removeItem('token');
             
-            // Set admin session
             localStorage.setItem('adminLogged', 'true');
             localStorage.setItem('adminEmail', admin.email);
             localStorage.setItem('adminName', admin.name || 'Admin');
@@ -70,29 +63,24 @@ const Login = () => {
           }
         } catch (adminError) {
           console.log('Admin check error:', adminError);
-          // Continue to check regular users
         }
 
-        // Check regular users
         const userRes = await axios.get("http://localhost:3130/users");
         const user = userRes.data.find(
           (u) => u.email === values.email && u.password === values.password
         );
 
         if (user) {
-          // Check if user is blocked
           if (user.status === 'blocked') {
             toast.error('Your account has been blocked');
             setLoading(false);
             return;
           }
           
-          // IMPORTANT: Clear admin session when regular user logs in
           localStorage.removeItem('adminLogged');
           localStorage.removeItem('adminEmail');
           localStorage.removeItem('adminName');
           
-          // Login user
           login(user);
           toast.success('Login successful!');
           navigate('/');

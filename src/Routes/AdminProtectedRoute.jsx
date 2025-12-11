@@ -6,18 +6,15 @@ const AdminProtectedRoute = ({ children }) => {
   const [isAuthorized, setIsAuthorized] = useState(false);
 
   useEffect(() => {
-    // Check multiple conditions for admin access
+   
     const adminLogged = localStorage.getItem("adminLogged");
     const userEmail = localStorage.getItem("userEmail");
     const adminEmail = localStorage.getItem("adminEmail");
     
-    // If adminLogged exists AND (either adminEmail exists or userEmail matches admin criteria)
     if (adminLogged === 'true') {
-      // Additional check: verify it's actually an admin email
+     
       const emailToCheck = adminEmail || userEmail;
       
-      // You can add more specific checks here
-      // For now, if adminLogged is true and we have an email, allow access
       if (emailToCheck) {
         setIsAuthorized(true);
       } else {
@@ -41,7 +38,6 @@ const AdminProtectedRoute = ({ children }) => {
   }
 
   if (!isAuthorized) {
-    // Clear any invalid admin session
     localStorage.removeItem("adminLogged");
     localStorage.removeItem("adminEmail");
     return <Navigate to="/login" replace />;

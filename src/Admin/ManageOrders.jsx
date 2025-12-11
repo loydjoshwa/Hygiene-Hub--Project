@@ -100,7 +100,6 @@ const ManageOrders = () => {
             </div>
           </div>
 
-          {/* Search Only - Filter buttons removed */}
           <div className="mb-8">
             <div className="relative">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -115,7 +114,6 @@ const ManageOrders = () => {
           </div>
         </div>
 
-        {/* Orders Table */}
         {filteredOrders.length === 0 ? (
           <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl border border-gray-200 p-12 text-center">
             <div className="w-20 h-20 bg-gradient-to-br from-[#00CAFF]/10 to-[#00FFDE]/10 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -176,7 +174,6 @@ const ManageOrders = () => {
                         <span className="font-bold text-lg text-gray-800">₹{getTotalAmount(order)}</span>
                       </td>
                       <td className="px-6 py-4">
-                        {/* Status display only - dropdown removed */}
                         <span className={`px-4 py-1.5 rounded-lg text-sm font-medium inline-block ${getStatusColor(order.status)}`}>
                           {order.status?.charAt(0).toUpperCase() + order.status?.slice(1) || 'Processing'}
                         </span>

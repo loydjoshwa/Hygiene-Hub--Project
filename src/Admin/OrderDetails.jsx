@@ -91,7 +91,6 @@ const OrderDetails = () => {
       return order.shippingAddress;
     }
     
-    // Fallback for different data structures
     return {
       address: order?.address || order?.deliveryAddress || 'Not provided',
       city: order?.city || '',
@@ -188,7 +187,6 @@ const OrderDetails = () => {
               <p className="text-gray-600 mt-2">Order ID: <span className="font-mono font-semibold text-[#0065F8]">{getOrderId()}</span></p>
             </div>
             
-            {/* Status display only - dropdown removed */}
             <div className={`inline-flex items-center gap-3 px-6 py-3 rounded-xl font-medium ${getStatusColor(order.status)}`}>
               {getStatusIcon(order.status)}
               <span className="text-lg">{order.status?.charAt(0).toUpperCase() + order.status?.slice(1) || 'Unknown'}</span>
@@ -197,7 +195,6 @@ const OrderDetails = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Order Items */}
           <div className="lg:col-span-2 space-y-8">
             <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
               <div className="flex items-center justify-between mb-8">
@@ -269,9 +266,7 @@ const OrderDetails = () => {
             </div>
           </div>
 
-          {/* Order Information Sidebar */}
           <div className="space-y-8">
-            {/* Customer Information */}
             <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
               <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-3">
                 <User className="w-6 h-6 text-[#0065F8]" />
@@ -310,7 +305,6 @@ const OrderDetails = () => {
               </div>
             </div>
 
-            {/* Shipping Address */}
             <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
               <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-3">
                 <MapPin className="w-6 h-6 text-[#0065F8]" />
@@ -344,7 +338,6 @@ const OrderDetails = () => {
               </div>
             </div>
 
-            {/* Order Info */}
             <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
               <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-3">
                 <Calendar className="w-6 h-6 text-[#0065F8]" />

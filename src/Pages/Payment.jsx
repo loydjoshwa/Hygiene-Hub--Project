@@ -14,9 +14,8 @@ const Payment = () => {
   const { currentUser,isSessionActive } = useAuth();
 
   const [loading, setLoading] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState('card'); // 'card' or 'upi'
+  const [paymentMethod, setPaymentMethod] = useState('card'); 
 
-  // Create separate validation schemas for each payment method
   const cardValidationSchema = Yup.object({
     fullName: Yup.string().required("Full Name is required"),
     phone: Yup.string()
@@ -54,7 +53,6 @@ const Payment = () => {
       .required("UPI ID is required"),
   });
 
-  // Use the appropriate validation schema based on payment method
   const validationSchema = paymentMethod === 'card' ? cardValidationSchema : upiValidationSchema;
 
   const formik = useFormik({
@@ -148,7 +146,6 @@ const Payment = () => {
 
   const handlePaymentMethodChange = (method) => {
     setPaymentMethod(method);
-    // Clear validation errors when switching payment methods
     formik.setErrors({});
   };
 

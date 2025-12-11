@@ -128,7 +128,6 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Featured Products */}
         <section className="py-20 bg-gradient-to-b from-white to-blue-50">
           <div className="max-w-7xl mx-auto px-4">
             <div className="text-center mb-16">
@@ -152,7 +151,6 @@ const Home = () => {
                     key={product.id} 
                     className="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-green-200 relative"
                   >
-                    {/* Badge */}
                     <div className="absolute top-4 left-4 bg-gradient-to-r from-green-500 to-blue-500 text-white px-3 py-1 rounded-full text-xs font-bold z-10">
                       FEATURED
                     </div>
@@ -193,13 +191,11 @@ const Home = () => {
                           Add to Cart
                         </button>
                         
-                        {/* FIXED WISHLIST BUTTON - Clear Design */}
                         <button
                           onClick={() => handleAddToWishlist(product)}
                           className="group/wishlist relative p-3 rounded-xl transition-all duration-300 transform hover:-translate-y-1 bg-white shadow-md hover:shadow-lg border border-gray-200 hover:border-red-300"
                           title={isInWishlist(product.id) ? "Remove from Wishlist" : "Add to Wishlist"}
                         >
-                          {/* Heart icon */}
                           <svg 
                             xmlns="http://www.w3.org/2000/svg" 
                             className={`h-6 w-6 transition-all duration-300 ${
@@ -239,7 +235,6 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Stats Section */}
         <section className="py-16 bg-gradient-to-r from-green-600 to-blue-600 text-white">
           <div className="max-w-7xl mx-auto px-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">

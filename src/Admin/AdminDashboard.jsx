@@ -133,7 +133,6 @@ const AdminDashboard = () => {
           </div>
         </div>
         
-        {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
           {statCards.map((stat, index) => (
             <Link 
@@ -168,7 +167,6 @@ const AdminDashboard = () => {
           ))}
         </div>
 
-        {/* Recent Orders */}
         <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
           <div className="p-6 border-b border-gray-100">
             <div className="flex items-center justify-between">

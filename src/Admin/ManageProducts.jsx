@@ -1,4 +1,3 @@
-// ManageProducts.jsx
 import React, { useState, useEffect } from 'react';
 import AdminLayout from './AdminLayout';
 import { toast } from 'react-toastify';
@@ -169,7 +168,6 @@ const ManageProducts = () => {
             </div>
           </div>
 
-          {/* Products Table */}
           {filteredProducts.length === 0 ? (
             <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl border border-gray-200 p-12 text-center">
               <div className="w-20 h-20 bg-gradient-to-br from-[#00CAFF]/10 to-[#00FFDE]/10 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -266,7 +264,6 @@ const ManageProducts = () => {
         </div>
       </AdminLayout>
 
-      {/* Product Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
           <div className="bg-white rounded-2xl w-full max-w-2xl shadow-2xl animate-slideUp">

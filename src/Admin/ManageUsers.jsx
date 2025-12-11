@@ -1,4 +1,3 @@
-// ManageUsers.jsx
 import React, { useState, useEffect } from 'react';
 import AdminLayout from './AdminLayout';
 import { toast } from 'react-toastify';
@@ -97,7 +96,6 @@ const ManageUsers = () => {
           </div>
         </div>
 
-        {/* Users List */}
         {filteredUsers.length === 0 ? (
           <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl border border-gray-200 p-12 text-center">
             <div className="w-20 h-20 bg-gradient-to-br from-[#00CAFF]/10 to-[#00FFDE]/10 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -148,7 +146,6 @@ const ManageUsers = () => {
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
-                          {/* <Key className="w-4 h-4 text-gray-400" /> */}
                           <code className="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-lg">
                             {user.id}
                           </code>

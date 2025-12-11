@@ -1,11 +1,10 @@
-// PublicRoute.jsx
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../Context/CartContext";
 
 const PublicRoute = ({ children }) => {
-  const { currentUser } = useAuth();
+  const { currentUser, isSessionActive } = useAuth();
 
-  if (currentUser) {
+  if (currentUser && isSessionActive()) {
     return <Navigate to="/" replace />;
   }
 

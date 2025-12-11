@@ -6,12 +6,12 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useAuth } from '../Context/CartContext';
+import { useAuth } from "../Context/CartContext";   
 
 const Payment = () => {
   const navigate = useNavigate();
   const { cartItems, getTotalPrice, clearCart, createOrder } = useCart();
-  const { currentUser } = useAuth();
+  const { currentUser,isSessionActive } = useAuth();
 
   const [loading, setLoading] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('card'); // 'card' or 'upi'
@@ -74,10 +74,11 @@ const Payment = () => {
     validationSchema: validationSchema,
     
     onSubmit: async (values) => {
-      const updatedUser = JSON.parse(localStorage.getItem("currentUser"));
+     
 
-      if (!updatedUser || !currentUser) {
+      if (!currentUser || !isSessionActive()) {
         toast.error("User not logged in");
+        console.log("user not logged in")
         navigate("/login");
         return;
       }

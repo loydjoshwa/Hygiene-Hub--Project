@@ -61,7 +61,7 @@ const App = () => {
   
 </Routes>
 
-      <ToastContainer />
+      <ToastContainer autoClose={1500} />
 
     </CartProvider>
   );

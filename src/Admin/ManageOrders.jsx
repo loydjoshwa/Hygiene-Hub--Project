@@ -1,16 +1,14 @@
-// ManageOrders.jsx
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import AdminLayout from './AdminLayout';
 import { toast } from 'react-toastify';
 import axios from 'axios';
-import { Search, Eye, ChevronDown, Calendar, User, Mail } from 'lucide-react';
+import { Search, Eye, User, Mail, Calendar } from 'lucide-react';
 
 const ManageOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filter, setFilter] = useState('all');
 
   useEffect(() => {
     fetchOrders();
@@ -22,26 +20,9 @@ const ManageOrders = () => {
       setOrders(response.data || []);
       setLoading(false);
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error fetching orders:', error);
       toast.error('Failed to load orders');
       setLoading(false);
-    }
-  };
-
-  const updateOrderStatus = async (orderId, newStatus) => {
-    try {
-      await axios.patch(`http://localhost:3130/orders/${orderId}`, {
-        status: newStatus
-      });
-      
-      setOrders(orders.map(order => 
-        order.id === orderId ? { ...order, status: newStatus } : order
-      ));
-      
-      toast.success(`Status updated to ${newStatus}`);
-    } catch (error) {
-      console.error('Error:', error);
-      toast.error('Failed to update status');
     }
   };
 
@@ -57,21 +38,40 @@ const ManageOrders = () => {
 
   const filteredOrders = orders.filter(order => {
     const matchesSearch = 
-      order.orderId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.userName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.userEmail?.toLowerCase().includes(searchTerm.toLowerCase());
+      (order.orderId || order.id || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (order.userName || order.customerName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (order.userEmail || order.customerEmail || '').toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesFilter = filter === 'all' || order.status === filter;
-    
-    return matchesSearch && matchesFilter;
+    return matchesSearch;
   });
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-IN', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric'
-    });
+    if (!dateString) return 'N/A';
+    try {
+      return new Date(dateString).toLocaleDateString('en-IN', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+      });
+    } catch (error) {
+      return 'Invalid Date';
+    }
+  };
+
+  const getOrderId = (order) => {
+    return order.orderId || order.id || 'N/A';
+  };
+
+  const getCustomerName = (order) => {
+    return order.userName || order.customerName || 'Unknown';
+  };
+
+  const getCustomerEmail = (order) => {
+    return order.userEmail || order.customerEmail || 'N/A';
+  };
+
+  const getTotalAmount = (order) => {
+    return order.total || order.totalAmount || order.amount || 0;
   };
 
   if (loading) {
@@ -100,9 +100,9 @@ const ManageOrders = () => {
             </div>
           </div>
 
-          {/* Search */}
-          <div className="flex flex-col md:flex-row gap-4 mb-8">
-            <div className="flex-1 relative">
+          {/* Search Only - Filter buttons removed */}
+          <div className="mb-8">
+            <div className="relative">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
                 type="text"
@@ -124,7 +124,7 @@ const ManageOrders = () => {
               </svg>
             </div>
             <h3 className="text-xl font-bold text-gray-800 mb-3">No orders found</h3>
-            <p className="text-gray-600">Try adjusting your search or filter</p>
+            <p className="text-gray-600">Try adjusting your search</p>
           </div>
         ) : (
           <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
@@ -142,13 +142,13 @@ const ManageOrders = () => {
                 </thead>
                 <tbody className="divide-y divide-gray-100">
                   {filteredOrders.map((order) => (
-                    <tr key={order.id} className="hover:bg-gradient-to-r from-gray-50/50 to-transparent transition-colors">
+                    <tr key={order.id || order._id} className="hover:bg-gradient-to-r from-gray-50/50 to-transparent transition-colors">
                       <td className="px-6 py-4">
                         <Link 
-                          to={`/admin/orders/${order.id}`}
+                          to={`/admin/orders/${order.id || order._id}`}
                           className="text-[#0065F8] hover:text-[#4300FF] font-medium group flex items-center gap-2"
                         >
-                          {order.orderId}
+                          {getOrderId(order)}
                           <Eye className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
                         </Link>
                       </td>
@@ -158,10 +158,10 @@ const ManageOrders = () => {
                             <User className="w-5 h-5 text-[#0065F8]" />
                           </div>
                           <div>
-                            <p className="font-medium text-gray-800">{order.userName}</p>
+                            <p className="font-medium text-gray-800">{getCustomerName(order)}</p>
                             <p className="text-sm text-gray-500 flex items-center gap-1">
                               <Mail className="w-3 h-3" />
-                              {order.userEmail}
+                              {getCustomerEmail(order)}
                             </p>
                           </div>
                         </div>
@@ -169,27 +169,21 @@ const ManageOrders = () => {
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2 text-sm text-gray-600">
                           <Calendar className="w-4 h-4" />
-                          {formatDate(order.orderDate)}
+                          {formatDate(order.orderDate || order.createdAt)}
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="font-bold text-lg text-gray-800">₹{order.total}</span>
+                        <span className="font-bold text-lg text-gray-800">₹{getTotalAmount(order)}</span>
                       </td>
                       <td className="px-6 py-4">
-                        <select
-                          value={order.status}
-                          onChange={(e) => updateOrderStatus(order.id, e.target.value)}
-                          className={`px-4 py-1.5 rounded-lg text-sm font-medium border-0 focus:ring-2 focus:ring-[#00CAFF]/30 outline-none ${getStatusColor(order.status)}`}
-                        >
-                          <option value="processing">Processing</option>
-                          <option value="confirmed">Confirmed</option>
-                          <option value="delivered">Delivered</option>
-                          <option value="cancelled">Cancelled</option>
-                        </select>
+                        {/* Status display only - dropdown removed */}
+                        <span className={`px-4 py-1.5 rounded-lg text-sm font-medium inline-block ${getStatusColor(order.status)}`}>
+                          {order.status?.charAt(0).toUpperCase() + order.status?.slice(1) || 'Processing'}
+                        </span>
                       </td>
                       <td className="px-6 py-4">
                         <Link
-                          to={`/admin/orders/${order.id}`}
+                          to={`/admin/orders/${order.id || order._id}`}
                           className="px-4 py-2 bg-gradient-to-r from-[#00CAFF] to-[#00FFDE] text-white rounded-lg hover:shadow-lg transition-all flex items-center gap-2 text-sm"
                         >
                           View Details

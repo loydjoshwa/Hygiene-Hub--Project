@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react'; 
 import axios from "axios";   
 
 const CartContext = createContext();
@@ -8,19 +8,29 @@ export const useCart = () => useContext(CartContext);
 export const useAuth = () => useContext(AuthContext);
 
 export const CartProvider = ({ children }) => {
+
   const [cartItems, setCartItems] = useState([]);
   const [wishlistItems, setWishlistItems] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
+
+  const isSessionActive = () => {
+  const stored = localStorage.getItem("currentUser");
+  return stored !== null;
+};
+
 
   useEffect(() => {
     const user = localStorage.getItem('currentUser');
     if (user) setCurrentUser(JSON.parse(user));
   }, []);
 
+
+
   useEffect(() => {
     if (currentUser) {
       fetchUserCartItems();
       fetchUserWishlistItems();
+
     } else {
       setCartItems([]);
       setWishlistItems([]);
@@ -93,7 +103,11 @@ export const CartProvider = ({ children }) => {
   };
 
   const addToWishlist = async (product) => {
+    const updatedUser = localStorage.getItem("currentUser")
     if (!currentUser) throw new Error("Please login");
+    if (!updatedUser){ throw new Error("Please login");
+     
+    }
 
     try {
       const exists = wishlistItems.find(item => item.productId === product.id);
@@ -236,6 +250,7 @@ export const CartProvider = ({ children }) => {
   };
 
   const authValue = {
+    isSessionActive,
     currentUser,
     login,
     logout,

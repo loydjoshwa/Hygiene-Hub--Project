@@ -1,43 +1,40 @@
-// OrderDetails.jsx
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import AdminLayout from './AdminLayout';
 import { toast } from 'react-toastify';
 import axios from 'axios';
-import { ArrowLeft, Calendar, Phone, MapPin, CreditCard, Package, Truck, CheckCircle, User, Mail, Home, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Calendar, Phone, MapPin, CreditCard, Package, Truck, CheckCircle, User, Mail, Home, XCircle, AlertCircle } from 'lucide-react';
 
 const OrderDetails = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    fetchOrder();
+    if (id) {
+      fetchOrder();
+    }
   }, [id]);
 
   const fetchOrder = async () => {
     try {
+      setLoading(true);
+      setError('');
       const response = await axios.get(`http://localhost:3130/orders/${id}`);
-      setOrder(response.data);
+      
+      if (response.data) {
+        setOrder(response.data);
+      } else {
+        setError('Order not found');
+      }
       setLoading(false);
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error fetching order:', error);
+      setError('Failed to load order. Please try again.');
       toast.error('Failed to load order');
       setLoading(false);
-    }
-  };
-
-  const updateOrderStatus = async (newStatus) => {
-    try {
-      await axios.patch(`http://localhost:3130/orders/${id}`, {
-        status: newStatus
-      });
-      
-      setOrder({ ...order, status: newStatus });
-      toast.success(`Status updated to ${newStatus}`);
-    } catch (error) {
-      console.error('Error:', error);
-      toast.error('Failed to update status');
     }
   };
 
@@ -62,14 +59,73 @@ const OrderDetails = () => {
   };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-IN', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+    if (!dateString) return 'N/A';
+    try {
+      return new Date(dateString).toLocaleDateString('en-IN', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch (error) {
+      return 'Invalid Date';
+    }
+  };
+
+  const getCustomerName = () => {
+    return order?.userName || order?.customerName || 'Unknown';
+  };
+
+  const getCustomerEmail = () => {
+    return order?.userEmail || order?.customerEmail || 'N/A';
+  };
+
+  const getCustomerPhone = () => {
+    return order?.userPhone || order?.customerPhone || 'N/A';
+  };
+
+  const getShippingAddress = () => {
+    if (order?.shippingAddress) {
+      return order.shippingAddress;
+    }
+    
+    // Fallback for different data structures
+    return {
+      address: order?.address || order?.deliveryAddress || 'Not provided',
+      city: order?.city || '',
+      state: order?.state || '',
+      pincode: order?.pincode || order?.zipCode || ''
+    };
+  };
+
+  const getPaymentMethod = () => {
+    return order?.paymentMethod || order?.paymentType || 'unknown';
+  };
+
+  const getPaymentDetails = () => {
+    return order?.paymentDetails || {};
+  };
+
+  const getOrderId = () => {
+    return order?.orderId || order?.id || id || 'N/A';
+  };
+
+  const getItems = () => {
+    return order?.items || order?.products || [];
+  };
+
+  const getSubtotal = () => {
+    return order?.subtotal || order?.itemsTotal || 0;
+  };
+
+  const getShippingCost = () => {
+    return order?.shipping || order?.shippingCost || order?.deliveryCharge || 0;
+  };
+
+  const getTotal = () => {
+    return order?.total || order?.totalAmount || order?.grandTotal || 0;
   };
 
   if (loading) {
@@ -85,67 +141,57 @@ const OrderDetails = () => {
     );
   }
 
-  if (!order) {
+  if (error || !order) {
     return (
       <AdminLayout>
         <div className="p-6">
           <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl border border-gray-200 p-12 text-center">
             <div className="w-20 h-20 bg-gradient-to-br from-[#00CAFF]/10 to-[#00FFDE]/10 rounded-full flex items-center justify-center mx-auto mb-6">
-              <svg className="w-10 h-10 text-[#0065F8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-              </svg>
+              <AlertCircle className="w-10 h-10 text-red-500" />
             </div>
             <h2 className="text-2xl font-bold text-gray-800 mb-4">Order Not Found</h2>
-            <p className="text-gray-600 mb-8">The order you're looking for doesn't exist.</p>
-            <Link 
-              to="/admin/orders" 
+            <p className="text-gray-600 mb-8">{error || 'The order you\'re looking for doesn\'t exist.'}</p>
+            <button
+              onClick={() => navigate('/admin/orders')}
               className="px-6 py-3 bg-gradient-to-r from-[#4300FF] to-[#0065F8] text-white rounded-xl hover:shadow-xl transition-all inline-flex items-center gap-2"
             >
               <ArrowLeft className="w-5 h-5" />
               Back to Orders
-            </Link>
+            </button>
           </div>
         </div>
       </AdminLayout>
     );
   }
 
+  const shippingAddress = getShippingAddress();
+  const paymentMethod = getPaymentMethod();
+  const paymentDetails = getPaymentDetails();
+
   return (
     <AdminLayout>
       <div className="p-6">
         <div className="mb-8">
-          <Link 
-            to="/admin/orders" 
+          <button
+            onClick={() => navigate('/admin/orders')}
             className="inline-flex items-center gap-2 text-[#0065F8] hover:text-[#4300FF] mb-6 group"
           >
             <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
             Back to Orders
-          </Link>
+          </button>
           
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8">
             <div>
               <h1 className="text-3xl font-bold bg-gradient-to-r from-[#4300FF] to-[#00CAFF] bg-clip-text text-transparent">
                 Order Details
               </h1>
-              <p className="text-gray-600 mt-2">Order ID: <span className="font-mono font-semibold text-[#0065F8]">{order.orderId}</span></p>
+              <p className="text-gray-600 mt-2">Order ID: <span className="font-mono font-semibold text-[#0065F8]">{getOrderId()}</span></p>
             </div>
             
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-              <div className={`inline-flex items-center gap-3 px-6 py-3 rounded-xl font-medium ${getStatusColor(order.status)}`}>
-                {getStatusIcon(order.status)}
-                <span className="text-lg">{order.status.charAt(0).toUpperCase() + order.status.slice(1)}</span>
-              </div>
-              
-              <select 
-                value={order.status}
-                onChange={(e) => updateOrderStatus(e.target.value)}
-                className="px-6 py-3 bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#00CAFF]/30 focus:border-[#0065F8] outline-none transition-all"
-              >
-                <option value="processing">Processing</option>
-                <option value="confirmed">Confirmed</option>
-                <option value="delivered">Delivered</option>
-                <option value="cancelled">Cancelled</option>
-              </select>
+            {/* Status display only - dropdown removed */}
+            <div className={`inline-flex items-center gap-3 px-6 py-3 rounded-xl font-medium ${getStatusColor(order.status)}`}>
+              {getStatusIcon(order.status)}
+              <span className="text-lg">{order.status?.charAt(0).toUpperCase() + order.status?.slice(1) || 'Unknown'}</span>
             </div>
           </div>
         </div>
@@ -160,50 +206,66 @@ const OrderDetails = () => {
                   Order Items
                 </h2>
                 <div className="text-sm text-gray-500">
-                  {order.items?.length} item{order.items?.length !== 1 ? 's' : ''}
+                  {getItems().length} item{getItems().length !== 1 ? 's' : ''}
                 </div>
               </div>
               
-              <div className="space-y-6">
-                {order.items?.map((item, index) => (
-                  <div key={index} className="flex items-center justify-between border-b border-gray-100 pb-6 last:border-0 last:pb-0">
-                    <div className="flex items-center gap-6">
-                      <div className="w-20 h-20 overflow-hidden rounded-xl bg-gradient-to-br from-gray-100 to-gray-50 border border-gray-200">
-                        <img 
-                          src={item.image} 
-                          alt={item.name} 
-                          className="w-full h-full object-cover"
-                        />
+              {getItems().length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  No items found in this order
+                </div>
+              ) : (
+                <>
+                  <div className="space-y-6">
+                    {getItems().map((item, index) => (
+                      <div key={index} className="flex items-center justify-between border-b border-gray-100 pb-6 last:border-0 last:pb-0">
+                        <div className="flex items-center gap-6">
+                          <div className="w-20 h-20 overflow-hidden rounded-xl bg-gradient-to-br from-gray-100 to-gray-50 border border-gray-200 flex items-center justify-center">
+                            {item.image ? (
+                              <img 
+                                src={item.image} 
+                                alt={item.name} 
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <Package className="w-10 h-10 text-gray-400" />
+                            )}
+                          </div>
+                          <div>
+                            <h3 className="font-bold text-gray-800 text-lg mb-1">{item.name || 'Unnamed Item'}</h3>
+                            <p className="text-sm text-gray-500">Quantity: {item.quantity || 1}</p>
+                            <p className="text-sm text-gray-500">Price: ₹{item.price || 0} each</p>
+                            {item.size && <p className="text-sm text-gray-500">Size: {item.size}</p>}
+                            {item.color && <p className="text-sm text-gray-500">Color: {item.color}</p>}
+                          </div>
+                        </div>
+                        <p className="font-bold text-xl text-gray-800">
+                          ₹{((item.price || 0) * (item.quantity || 1)).toFixed(2)}
+                        </p>
                       </div>
-                      <div>
-                        <h3 className="font-bold text-gray-800 text-lg mb-1">{item.name}</h3>
-                        <p className="text-sm text-gray-500">Quantity: {item.quantity}</p>
-                        <p className="text-sm text-gray-500">Price: ₹{item.price} each</p>
+                    ))}
+                  </div>
+                  
+                  <div className="mt-10 pt-8 border-t border-gray-200">
+                    <div className="space-y-3 max-w-md ml-auto">
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600">Subtotal</span>
+                        <span className="font-medium">₹{getSubtotal().toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600">Shipping</span>
+                        <span className="font-medium">₹{getShippingCost().toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between items-center text-xl font-bold pt-4 border-t border-gray-200 mt-4">
+                        <span>Total Amount</span>
+                        <span className="bg-gradient-to-r from-[#00FFDE] to-[#00CAFF] bg-clip-text text-transparent text-2xl">
+                          ₹{getTotal().toFixed(2)}
+                        </span>
                       </div>
                     </div>
-                    <p className="font-bold text-xl text-gray-800">₹{item.price * item.quantity}</p>
                   </div>
-                ))}
-              </div>
-              
-              <div className="mt-10 pt-8 border-t border-gray-200">
-                <div className="space-y-3 max-w-md ml-auto">
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600">Subtotal</span>
-                    <span className="font-medium">₹{order.subtotal}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600">Shipping</span>
-                    <span className="font-medium">₹{order.shipping}</span>
-                  </div>
-                  <div className="flex justify-between items-center text-xl font-bold pt-4 border-t border-gray-200 mt-4">
-                    <span>Total Amount</span>
-                    <span className="bg-gradient-to-r from-[#00FFDE] to-[#00CAFF] bg-clip-text text-transparent text-2xl">
-                      ₹{order.total}
-                    </span>
-                  </div>
-                </div>
-              </div>
+                </>
+              )}
             </div>
           </div>
 
@@ -222,7 +284,7 @@ const OrderDetails = () => {
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Name</p>
-                    <p className="font-bold text-gray-800">{order.userName}</p>
+                    <p className="font-bold text-gray-800">{getCustomerName()}</p>
                   </div>
                 </div>
                 
@@ -232,21 +294,19 @@ const OrderDetails = () => {
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Email</p>
-                    <p className="font-medium text-gray-800">{order.userEmail}</p>
+                    <p className="font-medium text-gray-800">{getCustomerEmail()}</p>
                   </div>
                 </div>
                 
-                {order.userPhone && (
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-[#00FFDE]/10 to-[#00CAFF]/10 rounded-xl flex items-center justify-center">
-                      <Phone className="w-6 h-6 text-[#00CAFF]" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Phone</p>
-                      <p className="font-medium text-gray-800">{order.userPhone}</p>
-                    </div>
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-[#00FFDE]/10 to-[#00CAFF]/10 rounded-xl flex items-center justify-center">
+                    <Phone className="w-6 h-6 text-[#00CAFF]" />
                   </div>
-                )}
+                  <div>
+                    <p className="text-sm text-gray-500">Phone</p>
+                    <p className="font-medium text-gray-800">{getCustomerPhone()}</p>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -263,18 +323,22 @@ const OrderDetails = () => {
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Address</p>
-                    <p className="font-medium text-gray-800">{order.shippingAddress?.address}</p>
+                    <p className="font-medium text-gray-800">{shippingAddress.address}</p>
                   </div>
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-gray-500">State</p>
-                    <p className="font-medium text-gray-800">{order.shippingAddress?.state}</p>
+                    <p className="text-sm text-gray-500">City</p>
+                    <p className="font-medium text-gray-800">{shippingAddress.city || 'N/A'}</p>
                   </div>
                   <div>
+                    <p className="text-sm text-gray-500">State</p>
+                    <p className="font-medium text-gray-800">{shippingAddress.state}</p>
+                  </div>
+                  <div className="col-span-2">
                     <p className="text-sm text-gray-500">Pincode</p>
-                    <p className="font-medium text-gray-800">{order.shippingAddress?.pincode}</p>
+                    <p className="font-medium text-gray-800">{shippingAddress.pincode}</p>
                   </div>
                 </div>
               </div>
@@ -293,7 +357,7 @@ const OrderDetails = () => {
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Order Date</p>
-                    <p className="font-medium text-gray-800">{formatDate(order.orderDate)}</p>
+                    <p className="font-medium text-gray-800">{formatDate(order.orderDate || order.createdAt)}</p>
                   </div>
                 </div>
                 
@@ -303,14 +367,21 @@ const OrderDetails = () => {
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Payment Method</p>
-                    <p className="font-medium text-gray-800">{order.paymentMethod?.toUpperCase()}</p>
+                    <p className="font-medium text-gray-800">{paymentMethod.toUpperCase()}</p>
                   </div>
                 </div>
                 
-                {order.paymentMethod === 'upi' && order.paymentDetails?.upiId && (
+                {paymentMethod === 'upi' && paymentDetails.upiId && (
                   <div className="bg-gradient-to-r from-gray-50 to-gray-100/50 rounded-xl p-4">
                     <p className="text-sm text-gray-500 mb-1">UPI ID</p>
-                    <p className="font-medium text-gray-800">{order.paymentDetails.upiId}</p>
+                    <p className="font-medium text-gray-800">{paymentDetails.upiId}</p>
+                  </div>
+                )}
+                
+                {paymentMethod === 'card' && paymentDetails.cardLast4 && (
+                  <div className="bg-gradient-to-r from-gray-50 to-gray-100/50 rounded-xl p-4">
+                    <p className="text-sm text-gray-500 mb-1">Card</p>
+                    <p className="font-medium text-gray-800">**** **** **** {paymentDetails.cardLast4}</p>
                   </div>
                 )}
               </div>

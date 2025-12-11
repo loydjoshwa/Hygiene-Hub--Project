@@ -14,7 +14,7 @@ const Navbar = () => {
     logout();
     navigate('/login');
     toast.success('Logged out successfully');
-    setOpen(false);
+    setOpen(false); 
   };
 
   return (

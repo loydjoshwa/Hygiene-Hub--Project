@@ -10,7 +10,7 @@ const Home = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const { addToCart } = useCart();
-  const { addToWishlist, currentUser, isInWishlist } = useAuth();
+  const { addToWishlist, currentUser, isInWishlist , isSessionActive} = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,9 +29,9 @@ const Home = () => {
 
     fetchFeaturedProducts();
   }, []);
-  
+
   const handleAddToCart = async (product) => {
-    if (!currentUser) {
+    if (!currentUser || !isSessionActive()) {
       toast.error('Please login to add items to cart');
       navigate('/login');
       return;
@@ -46,7 +46,7 @@ const Home = () => {
   };
 
   const handleAddToWishlist = async (product) => {
-    if (!currentUser) {
+    if (!currentUser || !isSessionActive()) {
       toast.error('Please login to add items to wishlist');
       navigate('/login');
       return;

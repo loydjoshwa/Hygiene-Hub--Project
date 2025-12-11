@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { useCart, useAuth } from '../Context/CartContext';
+import { useNavigate } from 'react-router-dom';
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -11,8 +12,8 @@ const Products = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const { addToCart } = useCart();
-  const { addToWishlist, currentUser, isInWishlist } = useAuth();
-
+  const { addToWishlist, currentUser, isInWishlist, isSessionActive } = useAuth();
+  const navigate = useNavigate()
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -43,8 +44,9 @@ const Products = () => {
   }, [searchTerm, products]);
 
   const handleAddToCart = async (product) => {
-    if (!currentUser) {
+    if (!currentUser || !isSessionActive()) {
       toast.error('Please login to add items to cart');
+      navigate("/login")
       return;
     }
 
@@ -55,10 +57,11 @@ const Products = () => {
       toast.error(error.message);
     }
   };
-
+  
   const handleAddToWishlist = async (product) => {
-    if (!currentUser) {
+    if (!currentUser || !isSessionActive() ) {
       toast.error('Please login to add items to wishlist');
+      navigate("/login")
       return;
     }
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../Context/CartContext";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 const MyOrders = () => {
   const { currentUser } = useAuth();
@@ -53,6 +54,7 @@ const MyOrders = () => {
           ))
         )}
       </div>
+      <Footer />
     </div>
   );
 };

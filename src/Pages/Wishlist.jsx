@@ -1,22 +1,29 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { useAuth, useCart } from '../Context/CartContext';
 
 const Wishlist = () => {
-  const { wishlistItems, removeFromWishlist, currentUser } = useAuth();
+  const navigate=useNavigate()
+  const { wishlistItems, removeFromWishlist, currentUser, isSessionActive} = useAuth();
   const { addToCart } = useCart();
 
   const handleRemoveFromWishlist = (productId, productName) => {
+      if (!currentUser|| !isSessionActive()) {
+      toast.error('Please login to add items to cart');
+      navigate("/login")
+      return;
+    }
     removeFromWishlist(productId);
     toast.error(`${productName} removed from wishlist`);
   };
-
+  
   const handleAddToCart = async (product) => {
-    if (!currentUser) {
+    if (!currentUser|| !!isSessionActive()) {
       toast.error('Please login to add items to cart');
+      navigate("/login")
       return;
     }
 
@@ -29,8 +36,9 @@ const Wishlist = () => {
   };
 
   const handleMoveAllToCart = async () => {
-    if (!currentUser) {
+    if (!currentUser || !isSessionActive()) {
       toast.error('Please login to add items to cart');
+     navigate("/login")
       return;
     }
 

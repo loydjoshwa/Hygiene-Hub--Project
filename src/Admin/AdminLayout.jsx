@@ -36,7 +36,7 @@ const AdminLayout = ({ children }) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#00CAFF]/5 to-[#4300FF]/5">
 
-      {/* ================= SIDEBAR ================= */}
+
       <aside
         className={`
           fixed inset-y-0 left-0 z-50
@@ -46,7 +46,7 @@ const AdminLayout = ({ children }) => {
           lg:translate-x-0 lg:w-20 lg:hover:w-64 group
         `}
       >
-        {/* Logo */}
+        
         <div className="h-20 border-b border-white/20 flex items-center px-4">
           <div className="w-12 h-12 shrink-0 bg-gradient-to-br from-[#00FFDE] to-[#00CAFF] rounded-xl flex items-center justify-center text-2xl font-bold">
             H
@@ -57,7 +57,7 @@ const AdminLayout = ({ children }) => {
           </div>
         </div>
 
-        {/* Navigation */}
+      
         <nav className="p-4">
           <ul className="space-y-2">
             {navItems.map(({ name, path, icon: Icon }) => (
@@ -73,7 +73,7 @@ const AdminLayout = ({ children }) => {
                       : "hover:bg-white/10"}
                   `}
                 >
-                  {/* 🔑 ICON FIX */}
+                  
                   <div className="w-10 h-10 shrink-0 flex items-center justify-center">
                     <Icon
                       className={`w-5 h-5 ${
@@ -82,7 +82,7 @@ const AdminLayout = ({ children }) => {
                     />
                   </div>
 
-                  {/* Text */}
+                  
                   <span
                     className="
                       whitespace-nowrap
@@ -107,7 +107,8 @@ const AdminLayout = ({ children }) => {
               </li>
             ))}
 
-            {/* Logout */}
+          
+
             <li className="pt-6 mt-6 border-t border-white/20">
               <button
                 onClick={handleLogout}
@@ -125,7 +126,7 @@ const AdminLayout = ({ children }) => {
         </nav>
       </aside>
 
-      {/* ================= MAIN ================= */}
+      
       <div className="lg:ml-20 transition-all duration-300">
         <header className="bg-white/80 backdrop-blur shadow border-b">
           <div className="flex items-center gap-4 px-6 py-4">

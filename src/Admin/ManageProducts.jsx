@@ -122,7 +122,7 @@ const ManageProducts = () => {
       <AdminLayout>
         <div className="p-6">
 
-          {/* HEADER */}
+          
           <div className="flex justify-between items-center mb-8">
             <h1 className="text-3xl font-bold">Manage Products</h1>
 
@@ -138,7 +138,7 @@ const ManageProducts = () => {
             </button>
           </div>
 
-          {/* SEARCH BAR */}
+         
           <div className="relative mb-6">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
@@ -149,7 +149,6 @@ const ManageProducts = () => {
             />
           </div>
 
-          {/* TABLE */}
           <div className="bg-white rounded-xl shadow-lg overflow-hidden">
             <table className="w-full">
               <thead className="bg-gray-100 text-left">
@@ -199,12 +198,12 @@ const ManageProducts = () => {
         </div>
       </AdminLayout>
 
-      {/* ---------------- MODAL (OLD STYLE BUT BETTER ARRANGEMENT) ---------------- */}
+     
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4">
           <div className="bg-white w-full max-w-2xl rounded-2xl shadow-2xl p-8">
 
-            {/* HEADER */}
+            
             <div className="flex justify-between mb-8">
               <h2 className="text-2xl font-bold">
                 {editingProduct ? "Edit Product" : "Add Product"}
@@ -215,12 +214,12 @@ const ManageProducts = () => {
               </button>
             </div>
 
-            {/* FORM */}
+            
             <form onSubmit={formik.handleSubmit} className="space-y-6">
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                {/* NAME */}
+               
                 <div>
                   <label className="block mb-1 font-medium">Product Name *</label>
                   <input
@@ -241,7 +240,7 @@ const ManageProducts = () => {
                   )}
                 </div>
 
-                {/* PRICE */}
+                
                 <div>
                   <label className="block mb-1 font-medium">Price *</label>
                   <input
@@ -258,7 +257,6 @@ const ManageProducts = () => {
                   )}
                 </div>
 
-                {/* RATING */}
                 <div>
                   <label className="block mb-1 font-medium">Rating *</label>
                   <select
@@ -299,7 +297,7 @@ const ManageProducts = () => {
 
               </div>
 
-              {/* DESCRIPTION */}
+             
               <div>
                 <label className="block mb-1 font-medium">Description *</label>
                 <textarea
@@ -316,7 +314,6 @@ const ManageProducts = () => {
                 )}
               </div>
 
-              {/* BUTTONS */}
               <div className="flex gap-4 pt-4">
                 <button
                   type="button"

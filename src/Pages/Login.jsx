@@ -31,11 +31,9 @@ const Login = () => {
       setLoading(true);
 
       try {
-        // Clear previous admin data
         localStorage.removeItem('adminEmail');
         localStorage.removeItem('adminName');
 
-        // ---------------- ADMIN LOGIN CHECK ----------------
         try {
           const adminRes = await axios.get('http://localhost:3130/Admin');
           const admin = adminRes.data?.find(
@@ -43,12 +41,11 @@ const Login = () => {
           );
 
           if (admin) {
-            // remove user data if admin logs in
+            
             localStorage.removeItem('user');
             localStorage.removeItem('userEmail');
             localStorage.removeItem('token');
 
-            // Set admin credentials
             localStorage.setItem('adminLogged', 'true');
             localStorage.setItem('adminEmail', admin.email);
             localStorage.setItem('adminName', admin.name || 'Admin');
@@ -68,7 +65,7 @@ const Login = () => {
           console.log('Admin check error:', adminError);
         }
 
-        // ---------------- USER LOGIN CHECK ----------------
+    
         const userRes = await axios.get("http://localhost:3130/users");
         const user = userRes.data.find(
           (u) => u.email === values.email && u.password === values.password
@@ -81,12 +78,12 @@ const Login = () => {
             return;
           }
 
-          // 🚀 FIXED PART: Make sure normal users are NEVER treated as admin
+          
           localStorage.setItem('adminLogged', 'false');
           localStorage.removeItem('adminEmail');
           localStorage.removeItem('adminName');
 
-          // Store user login (context)
+        
           login(user);
           toast.success('Login successful!');
           navigate('/');

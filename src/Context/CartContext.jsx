@@ -12,18 +12,15 @@ export const CartProvider = ({ children }) => {
   const [wishlistItems, setWishlistItems] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
 
-  /* ================= SESSION ================= */
   const isSessionActive = () => {
     return !!localStorage.getItem("currentUser");
   };
 
-  /* ================= INITIAL LOAD ================= */
   useEffect(() => {
     const stored = localStorage.getItem("currentUser");
     if (stored) setCurrentUser(JSON.parse(stored));
   }, []);
 
-  /* ================= MULTI TAB LOGOUT ================= */
   useEffect(() => {
     const handleStorage = (e) => {
       if (e.key === "currentUser" && e.newValue === null) {
@@ -38,7 +35,6 @@ export const CartProvider = ({ children }) => {
     return () => window.removeEventListener("storage", handleStorage);
   }, []);
 
-  /* ================= FETCH DATA ================= */
   useEffect(() => {
     if (currentUser) {
       fetchUserCartItems();
@@ -49,7 +45,6 @@ export const CartProvider = ({ children }) => {
     }
   }, [currentUser]);
 
-  /* ================= LOGIN / LOGOUT ================= */
   const login = (user) => {
     localStorage.setItem("currentUser", JSON.stringify(user));
     setCurrentUser(user);
@@ -62,7 +57,6 @@ export const CartProvider = ({ children }) => {
     setWishlistItems([]);
   };
 
-  /* ================= USER VALIDATION ================= */
   const validateUser = async () => {
     const stored = localStorage.getItem("currentUser");
     if (!stored) return false;
@@ -77,7 +71,6 @@ export const CartProvider = ({ children }) => {
     return true;
   };
 
-  /* ================= CART ================= */
   const fetchUserCartItems = async () => {
     if (!currentUser) return;
     const { data } = await axios.get("http://localhost:3130/cart");
@@ -158,7 +151,6 @@ export const CartProvider = ({ children }) => {
     setCartItems([]);
   };
 
-  /* ================= WISHLIST ================= */
   const fetchUserWishlistItems = async () => {
     if (!currentUser) return;
     const { data } = await axios.get("http://localhost:3130/wishlist");
@@ -195,7 +187,6 @@ export const CartProvider = ({ children }) => {
 
   const getWishlistCount = () => wishlistItems.length;
 
-  /* ================= ORDERS ================= */
   const createOrder = async (orderData) => {
     if (!(await validateUser())) {
       throw new Error("User blocked or logged out");
@@ -208,7 +199,6 @@ export const CartProvider = ({ children }) => {
     return data;
   };
 
-  /* ================= PROVIDERS ================= */
   return (
     <AuthContext.Provider
       value={{

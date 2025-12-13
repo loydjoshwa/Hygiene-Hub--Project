@@ -19,7 +19,7 @@
       "username": "hanan",
       "email": "hanan@gmail.com",
       "password": "123456",
-      "status": "active"
+      "status": "blocked"
     },
     {
       "id": "4687",
@@ -60,6 +60,13 @@
       "username": "hanan",
       "email": "hanan5@gmail.com",
       "password": "123456789"
+    },
+    {
+      "id": "fe7e",
+      "username": "loyd",
+      "email": "loyd123@gmail.com",
+      "password": "123456",
+      "status": "blocked"
     }
   ],
   "products": [
@@ -214,8 +221,28 @@
       "price": 369,
       "image": "/prod2.webp",
       "description": "Gentle moisturizing Aloe Vera handwash offering deep protection from germs and dryness.",
-      "quantity": 1,
+      "quantity": 3,
       "userId": "dd71"
+    },
+    {
+      "id": "e939",
+      "productId": "p2",
+      "name": "Khadi Aloe Vera & Mint Handwash",
+      "price": 369,
+      "image": "/prod2.webp",
+      "description": "Gentle moisturizing Aloe Vera handwash offering deep protection from germs and dryness.",
+      "quantity": 3,
+      "userId": "fe7e"
+    },
+    {
+      "id": "5f3c",
+      "productId": "p2",
+      "name": "Khadi Aloe Vera & Mint Handwash",
+      "price": 369,
+      "image": "/prod2.webp",
+      "description": "Gentle moisturizing Aloe Vera handwash offering deep protection from germs and dryness.",
+      "quantity": 1,
+      "userId": "b5d8"
     }
   ],
   "wishlist": [
@@ -254,6 +281,33 @@
       "image": "/prod3.webp",
       "description": "A calming lavender and mint-infused handwash made with natural botanicals and a soothing aroma.",
       "userId": "dd71"
+    },
+    {
+      "id": "440c",
+      "productId": "p2",
+      "name": "Khadi Aloe Vera & Mint Handwash",
+      "price": 369,
+      "image": "/prod2.webp",
+      "description": "Gentle moisturizing Aloe Vera handwash offering deep protection from germs and dryness.",
+      "userId": "fe7e"
+    },
+    {
+      "id": "cf16",
+      "productId": "p4",
+      "name": "Greenviv Tea Tree & Peppermint Handwash",
+      "price": 389,
+      "image": "/prod4.webp",
+      "description": "Tea tree and peppermint handwash with cooling and antibacterial properties for fresh, clean hands.",
+      "userId": "dd71"
+    },
+    {
+      "id": "3cd5",
+      "productId": "p2",
+      "name": "Khadi Aloe Vera & Mint Handwash",
+      "price": 369,
+      "image": "/prod2.webp",
+      "description": "Gentle moisturizing Aloe Vera handwash offering deep protection from germs and dryness.",
+      "userId": "b5d8"
     }
   ],
   "orders": [
@@ -578,6 +632,38 @@
       "shipping": 40,
       "total": 519,
       "orderDate": "2025-12-11T06:46:02.576Z",
+      "status": "confirmed"
+    },
+    {
+      "id": "156d",
+      "orderId": "ORD128168",
+      "userId": "fe7e",
+      "userName": "Loyd Joshwa Dsouza",
+      "userEmail": "loyd123@gmail.com",
+      "userPhone": "8848100705",
+      "shippingAddress": {
+        "address": "d",
+        "state": "Kerala",
+        "pincode": "123456"
+      },
+      "paymentMethod": "upi",
+      "paymentDetails": {
+        "upiId": "hevy@upi",
+        "status": "pending"
+      },
+      "items": [
+        {
+          "productId": "p2",
+          "name": "Khadi Aloe Vera & Mint Handwash",
+          "price": 369,
+          "quantity": 1,
+          "image": "/prod2.webp"
+        }
+      ],
+      "subtotal": 369,
+      "shipping": 40,
+      "total": 409,
+      "orderDate": "2025-12-12T10:25:28.168Z",
       "status": "confirmed"
     }
   ]

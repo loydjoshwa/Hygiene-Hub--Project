@@ -11,7 +11,7 @@ import { useAuth } from "../Context/CartContext";
 const Payment = () => {
   const navigate = useNavigate();
   const { cartItems, getTotalPrice, clearCart, createOrder } = useCart();
-  const { currentUser,isSessionActive } = useAuth();
+  const { currentUser,isSessionActive,validateUser } = useAuth();
 
   const [loading, setLoading] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('card'); 
@@ -72,6 +72,14 @@ const Payment = () => {
     validationSchema: validationSchema,
     
     onSubmit: async (values) => {
+
+      const isValid = await validateUser();
+if (!isValid) {
+  toast.error("Account blocked or session expired");
+  navigate("/login");
+  return;
+}
+
      
 
       if (!currentUser || !isSessionActive()) {

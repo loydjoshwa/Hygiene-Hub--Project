@@ -12,8 +12,7 @@ const Login = () => {
   const { login } = useAuth();
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-  }, []);
+  useEffect(() => {}, []);
 
   const formik = useFormik({
     initialValues: {
@@ -32,9 +31,11 @@ const Login = () => {
       setLoading(true);
 
       try {
+        // Clear previous admin data
         localStorage.removeItem('adminEmail');
         localStorage.removeItem('adminName');
 
+        // ---------------- ADMIN LOGIN CHECK ----------------
         try {
           const adminRes = await axios.get('http://localhost:3130/Admin');
           const admin = adminRes.data?.find(
@@ -42,15 +43,16 @@ const Login = () => {
           );
 
           if (admin) {
-            
+            // remove user data if admin logs in
             localStorage.removeItem('user');
             localStorage.removeItem('userEmail');
             localStorage.removeItem('token');
-            
+
+            // Set admin credentials
             localStorage.setItem('adminLogged', 'true');
             localStorage.setItem('adminEmail', admin.email);
             localStorage.setItem('adminName', admin.name || 'Admin');
-            
+
             toast.success('Admin login successful!', {
               position: "top-center",
               autoClose: 1500,
@@ -59,12 +61,14 @@ const Login = () => {
             setTimeout(() => {
               navigate('/admin/dashboard');
             }, 1000);
+
             return;
           }
         } catch (adminError) {
           console.log('Admin check error:', adminError);
         }
 
+        // ---------------- USER LOGIN CHECK ----------------
         const userRes = await axios.get("http://localhost:3130/users");
         const user = userRes.data.find(
           (u) => u.email === values.email && u.password === values.password
@@ -76,19 +80,21 @@ const Login = () => {
             setLoading(false);
             return;
           }
-          
-          localStorage.removeItem('adminLogged');
+
+          // 🚀 FIXED PART: Make sure normal users are NEVER treated as admin
+          localStorage.setItem('adminLogged', 'false');
           localStorage.removeItem('adminEmail');
           localStorage.removeItem('adminName');
-          
+
+          // Store user login (context)
           login(user);
           toast.success('Login successful!');
           navigate('/');
-          
         } else {
           toast.error('Invalid email or password');
           setLoading(false);
         }
+
       } catch (error) {
         console.error('Login error:', error);
         toast.error('Something went wrong. Please try again.');
@@ -107,10 +113,9 @@ const Login = () => {
         backgroundRepeat: "no-repeat"
       }}
     >
-      
       <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-green-600/20"></div>
       <div className="absolute inset-0 bg-black/40"></div>
-      
+
       <div className="relative z-10 p-8 rounded-2xl shadow-2xl w-96 backdrop-blur-lg"
         style={{
           background: "rgba(255, 255, 255, 0.1)",
@@ -118,10 +123,9 @@ const Login = () => {
           boxShadow: "0 25px 45px rgba(0, 0, 0, 0.3)"
         }}
       >
-        
         <div className="absolute -top-10 -right-10 w-20 h-20 bg-green-500/20 rounded-full blur-xl"></div>
         <div className="absolute -bottom-10 -left-10 w-20 h-20 bg-blue-500/20 rounded-full blur-xl"></div>
-        
+
         <div className="text-center mb-8">
           <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
             <span className="text-2xl text-white">🔐</span>
@@ -189,7 +193,6 @@ const Login = () => {
           </button>
         </form>
 
-
         <div className="mt-8 pt-6 border-t border-white/10">
           <p className="text-center text-gray-300">
             Don't have an account?{" "}
@@ -197,8 +200,8 @@ const Login = () => {
               Register Now
             </Link>
           </p>
-       
         </div>
+
       </div>
     </div>
   );

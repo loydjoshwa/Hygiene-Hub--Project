@@ -67,6 +67,18 @@
       "email": "loyd123@gmail.com",
       "password": "123456",
       "status": "blocked"
+    },
+    {
+      "id": "c2e6",
+      "username": "hanan",
+      "email": "hanan12@gmail.com",
+      "password": "123456"
+    },
+    {
+      "id": "6148",
+      "username": "loyd33",
+      "email": "loyd33@gmail.com",
+      "password": "123456"
     }
   ],
   "products": [
@@ -664,6 +676,84 @@
       "shipping": 40,
       "total": 409,
       "orderDate": "2025-12-12T10:25:28.168Z",
+      "status": "confirmed"
+    },
+    {
+      "id": "7b41",
+      "orderId": "ORD351578",
+      "userId": "e6b2",
+      "userName": "Loyd Joshwa Dsouza",
+      "userEmail": "hanan123@gmail.com",
+      "userPhone": "8848100705",
+      "shippingAddress": {
+        "address": "5r",
+        "state": "Kerala",
+        "pincode": "123456"
+      },
+      "paymentMethod": "upi",
+      "paymentDetails": {
+        "upiId": "hevy@upi",
+        "status": "pending"
+      },
+      "items": [
+        {
+          "productId": "p7",
+          "name": "Lassa Antibacterial Germ Protection Handwash",
+          "price": 287,
+          "quantity": 1,
+          "image": "/prod7.webp"
+        },
+        {
+          "productId": "aa58",
+          "name": "Khadi Lemon Ayurvedic Handwash",
+          "price": 479,
+          "quantity": 1,
+          "image": "/prod1.webp"
+        },
+        {
+          "productId": "6800",
+          "name": "Khadi Aloe Vera & Mint Handwash",
+          "price": 369,
+          "quantity": 1,
+          "image": "/prod2.webp"
+        }
+      ],
+      "subtotal": 1135,
+      "shipping": 40,
+      "total": 1175,
+      "orderDate": "2025-12-30T07:55:51.602Z",
+      "status": "confirmed"
+    },
+    {
+      "id": "3a7c",
+      "orderId": "ORD097851",
+      "userId": "e6b2",
+      "userName": "Loyd Joshwa Dsouza",
+      "userEmail": "hanan123@gmail.com",
+      "userPhone": "8848100705",
+      "shippingAddress": {
+        "address": "ffg",
+        "state": "Kerala",
+        "pincode": "123456"
+      },
+      "paymentMethod": "upi",
+      "paymentDetails": {
+        "upiId": "hevy@upi",
+        "status": "pending"
+      },
+      "items": [
+        {
+          "productId": "p2",
+          "name": "Khadi Aloe Vera & Mint Handwash",
+          "price": 369,
+          "quantity": 1,
+          "image": "/prod2.webp"
+        }
+      ],
+      "subtotal": 369,
+      "shipping": 40,
+      "total": 409,
+      "orderDate": "2025-12-30T08:08:17.855Z",
       "status": "confirmed"
     }
   ]

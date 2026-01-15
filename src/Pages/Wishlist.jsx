@@ -21,7 +21,7 @@ const Wishlist = () => {
   };
   
   const handleAddToCart = async (product) => {
-    if (!currentUser|| !!isSessionActive()) {
+    if (!currentUser|| !isSessionActive()) {
       toast.error('Please login to add items to cart');
       navigate("/login")
       return;

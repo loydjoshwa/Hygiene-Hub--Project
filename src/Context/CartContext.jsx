@@ -157,21 +157,26 @@ export const CartProvider = ({ children }) => {
     setWishlistItems(data.filter((i) => i.userId === currentUser.id));
   };
 
+  // ✅ FIXED FUNCTION
   const addToWishlist = async (product) => {
     if (!(await validateUser())) throw new Error("Session expired");
 
     const exists = wishlistItems.find((i) => i.productId === product.id);
-    if (!exists) {
-      await axios.post("http://localhost:3130/wishlist", {
-        productId: product.id,
-        name: product.name,
-        price: product.price,
-        image: product.image,
-        description: product.description,
-        userId: currentUser.id,
-      });
-      fetchUserWishlistItems();
+    if (exists) {
+      return false; // already in wishlist
     }
+
+    await axios.post("http://localhost:3130/wishlist", {
+      productId: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      description: product.description,
+      userId: currentUser.id,
+    });
+
+    fetchUserWishlistItems();
+    return true; // newly added
   };
 
   const removeFromWishlist = async (productId) => {
@@ -206,6 +211,7 @@ export const CartProvider = ({ children }) => {
         login,
         logout,
         isSessionActive,
+        validateUser,
         wishlistItems,
         addToWishlist,
         removeFromWishlist,

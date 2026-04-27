@@ -9,7 +9,6 @@ import { useNavigate } from 'react-router-dom';
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const { addToCart } = useCart();
   const { addToWishlist, currentUser, isInWishlist, isSessionActive } = useAuth();
@@ -19,7 +18,6 @@ const Products = () => {
       try {
         const response = await axios.get('http://localhost:3130/products');
         setProducts(response.data);
-        setFilteredProducts(response.data);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching products:', error);
@@ -31,16 +29,14 @@ const Products = () => {
     fetchProducts();
   }, []);
 
-  useEffect(() => {
+  const filteredProducts = React.useMemo(() => {
     if (searchTerm) {
-      const filtered = products.filter(product =>
+      return products.filter(product =>
         product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         product.description.toLowerCase().includes(searchTerm.toLowerCase())
       );
-      setFilteredProducts(filtered);
-    } else {
-      setFilteredProducts(products);
     }
+    return products;
   }, [searchTerm, products]);
 
   const handleAddToCart = async (product) => {

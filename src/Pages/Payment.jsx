@@ -93,6 +93,7 @@ if (!isValid) {
       
       try {
         const orderData = {
+          // eslint-disable-next-line react-hooks/purity
           orderId: `ORD${Date.now().toString().slice(-6)}`,
           userId: currentUser?.id || 'guest',
           userName: values.fullName,

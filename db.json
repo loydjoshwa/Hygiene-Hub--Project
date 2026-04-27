@@ -19,7 +19,7 @@
       "username": "hanan",
       "email": "hanan@gmail.com",
       "password": "123456",
-      "status": "blocked"
+      "status": "active"
     },
     {
       "id": "4687",
@@ -79,6 +79,12 @@
       "username": "loyd33",
       "email": "loyd33@gmail.com",
       "password": "123456"
+    },
+    {
+      "username": "loyd",
+      "email": "Loydjoshwad@gmail.com",
+      "password": "123456",
+      "id": "v4oz5Cm9OX4"
     }
   ],
   "products": [
@@ -255,6 +261,26 @@
       "description": "Gentle moisturizing Aloe Vera handwash offering deep protection from germs and dryness.",
       "quantity": 1,
       "userId": "b5d8"
+    },
+    {
+      "productId": "7cs9JtNEjY8",
+      "name": "Khadi Aloe Vera & Mint Handwash",
+      "price": 369,
+      "image": "/prod2.webp",
+      "description": "Gentle moisturizing Aloe Vera handwash offering deep protection from germs and dryness.",
+      "quantity": 1,
+      "userId": "acb5",
+      "id": "2vYqnXKWi4A"
+    },
+    {
+      "productId": "p2",
+      "name": "Khadi Aloe Vera & Mint Handwash",
+      "price": 369,
+      "image": "/prod2.webp",
+      "description": "Gentle moisturizing Aloe Vera handwash offering deep protection from germs and dryness.",
+      "quantity": 1,
+      "userId": "v4oz5Cm9OX4",
+      "id": "F12hYz3PvE8"
     }
   ],
   "wishlist": [
@@ -320,6 +346,24 @@
       "image": "/prod2.webp",
       "description": "Gentle moisturizing Aloe Vera handwash offering deep protection from germs and dryness.",
       "userId": "b5d8"
+    },
+    {
+      "productId": "p2",
+      "name": "Khadi Aloe Vera & Mint Handwash",
+      "price": 369,
+      "image": "/prod2.webp",
+      "description": "Gentle moisturizing Aloe Vera handwash offering deep protection from germs and dryness.",
+      "userId": "v4oz5Cm9OX4",
+      "id": "GWu0tB1JHIg"
+    },
+    {
+      "productId": "p7",
+      "name": "Lassa Antibacterial Germ Protection Handwash",
+      "price": 287,
+      "image": "/prod7.webp",
+      "description": "Anti-bacterial handwash with citrus fragrance, gentle cleansing, and everyday germ protection.",
+      "userId": "v4oz5Cm9OX4",
+      "id": "a3dXfZc0Z6U"
     }
   ],
   "orders": [
@@ -367,7 +411,7 @@
       "shipping": 40,
       "total": 1118,
       "orderDate": "2025-12-02T14:14:51.058Z",
-      "status": "processing"
+      "status": "confirmed"
     },
     {
       "id": "a20f",
@@ -399,7 +443,7 @@
       "shipping": 40,
       "total": 798,
       "orderDate": "2025-12-03T04:18:35.073Z",
-      "status": "processing"
+      "status": "confirmed"
     },
     {
       "id": "41e0",
@@ -756,5 +800,6 @@
       "orderDate": "2025-12-30T08:08:17.855Z",
       "status": "confirmed"
     }
-  ]
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }

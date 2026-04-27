@@ -4,7 +4,9 @@ import axios from "axios";
 const CartContext = createContext();
 const AuthContext = createContext();
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useCart = () => useContext(CartContext);
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => useContext(AuthContext);
 
 export const CartProvider = ({ children }) => {
@@ -35,6 +37,18 @@ export const CartProvider = ({ children }) => {
     return () => window.removeEventListener("storage", handleStorage);
   }, []);
 
+  async function fetchUserCartItems() {
+    if (!currentUser) return;
+    const { data } = await axios.get("http://localhost:3130/cart");
+    setCartItems(data.filter((i) => i.userId === currentUser.id));
+  }
+
+  async function fetchUserWishlistItems() {
+    if (!currentUser) return;
+    const { data } = await axios.get("http://localhost:3130/wishlist");
+    setWishlistItems(data.filter((i) => i.userId === currentUser.id));
+  }
+
   useEffect(() => {
     if (currentUser) {
       fetchUserCartItems();
@@ -43,6 +57,7 @@ export const CartProvider = ({ children }) => {
       setCartItems([]);
       setWishlistItems([]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser]);
 
   const login = (user) => {
@@ -71,11 +86,7 @@ export const CartProvider = ({ children }) => {
     return true;
   };
 
-  const fetchUserCartItems = async () => {
-    if (!currentUser) return;
-    const { data } = await axios.get("http://localhost:3130/cart");
-    setCartItems(data.filter((i) => i.userId === currentUser.id));
-  };
+
 
   const addToCart = async (product) => {
     if (!(await validateUser())) throw new Error("Session expired");
@@ -151,11 +162,7 @@ export const CartProvider = ({ children }) => {
     setCartItems([]);
   };
 
-  const fetchUserWishlistItems = async () => {
-    if (!currentUser) return;
-    const { data } = await axios.get("http://localhost:3130/wishlist");
-    setWishlistItems(data.filter((i) => i.userId === currentUser.id));
-  };
+
 
   // ✅ FIXED FUNCTION
   const addToWishlist = async (product) => {

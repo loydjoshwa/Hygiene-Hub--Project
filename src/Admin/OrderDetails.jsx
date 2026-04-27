@@ -38,6 +38,17 @@ const OrderDetails = () => {
     }
   };
 
+  const updateOrderStatus = async (newStatus) => {
+    try {
+      await axios.patch(`http://localhost:3130/orders/${id}`, { status: newStatus });
+      setOrder({ ...order, status: newStatus });
+      toast.success(`Order status updated to ${newStatus}`);
+    } catch (error) {
+      console.error('Error updating order status:', error);
+      toast.error('Failed to update order status');
+    }
+  };
+
   const getStatusColor = (status) => {
     const colors = {
       delivered: 'bg-gradient-to-r from-green-100 to-green-50 text-green-800 border border-green-200',
@@ -187,9 +198,20 @@ const OrderDetails = () => {
               <p className="text-gray-600 mt-2">Order ID: <span className="font-mono font-semibold text-[#0065F8]">{getOrderId()}</span></p>
             </div>
             
-            <div className={`inline-flex items-center gap-3 px-6 py-3 rounded-xl font-medium ${getStatusColor(order.status)}`}>
+            <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl font-medium ${getStatusColor(order.status)}`}>
               {getStatusIcon(order.status)}
-              <span className="text-lg">{order.status?.charAt(0).toUpperCase() + order.status?.slice(1) || 'Unknown'}</span>
+              <select 
+                value={order.status || 'processing'} 
+                onChange={(e) => updateOrderStatus(e.target.value)}
+                className="bg-transparent text-lg font-bold outline-none cursor-pointer appearance-none focus:ring-0 border-none"
+                style={{ WebkitAppearance: 'none', MozAppearance: 'none' }}
+                title="Change Order Status"
+              >
+                <option value="processing" className="text-gray-800 bg-white">Processing</option>
+                <option value="confirmed" className="text-gray-800 bg-white">Confirmed</option>
+                <option value="delivered" className="text-gray-800 bg-white">Delivered</option>
+                <option value="cancelled" className="text-gray-800 bg-white">Cancelled</option>
+              </select>
             </div>
           </div>
         </div>

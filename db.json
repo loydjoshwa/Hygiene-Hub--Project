@@ -281,6 +281,16 @@
       "quantity": 1,
       "userId": "v4oz5Cm9OX4",
       "id": "F12hYz3PvE8"
+    },
+    {
+      "productId": "p2",
+      "name": "Khadi Aloe Vera & Mint Handwash",
+      "price": 369,
+      "image": "/prod2.webp",
+      "description": "Gentle moisturizing Aloe Vera handwash offering deep protection from germs and dryness.",
+      "quantity": 1,
+      "userId": "acb5",
+      "id": "7D8D8bKFMlI"
     }
   ],
   "wishlist": [
